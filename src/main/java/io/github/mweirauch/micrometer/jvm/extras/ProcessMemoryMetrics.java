@@ -42,8 +42,12 @@ public class ProcessMemoryMetrics implements MeterBinder {
         for (final KEY key : KEY.values()) {
             final String name = "process.memory." + key.name().toLowerCase(Locale.ENGLISH);
             final Id meterId = registry.createId(name, Collections.emptyList(), null, "bytes");
-            registry.gauge(meterId, smaps, smapsRef -> smapsRef.get(key));
+            registry.gauge(meterId, smaps, smapsRef -> value(key));
         }
+    }
+
+    private Double value(KEY key) {
+        return smaps.get(key).doubleValue();
     }
 
 }
