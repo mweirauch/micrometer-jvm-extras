@@ -32,7 +32,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps.KEY;
 
-public class ProcfsSmapsUnit0Test {
+public class ProcfsSmapsTest {
 
     private static Path BASE;
 

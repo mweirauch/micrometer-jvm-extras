@@ -35,7 +35,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsReader.ReadResult;
 
-public class ProcfsEntryUnit0Test {
+public class ProcfsEntryTest {
 
     private final ProcfsReader reader = mock(ProcfsReader.class);
 
