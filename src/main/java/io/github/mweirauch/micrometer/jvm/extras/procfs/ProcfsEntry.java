@@ -17,7 +17,11 @@ package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongUnaryOperator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +38,34 @@ abstract class ProcfsEntry {
 
     private long lastHandle = -1;
 
+    protected final Map<ValueKey, AtomicLong> values = new HashMap<>();
+
+    public interface ValueKey {
+        //
+    }
+
     protected ProcfsEntry(ProcfsReader reader) {
         this.reader = Objects.requireNonNull(reader);
+    }
+
+    public Long get(ValueKey key) {
+        Objects.requireNonNull(key);
+
+        collect();
+        return Long.valueOf(values.getOrDefault(key, defaultValue()).longValue());
+    }
+
+    protected void inc(ValueKey key, long increment) {
+        Objects.requireNonNull(key);
+
+        values.get(key).getAndUpdate(new LongUnaryOperator() {
+
+            @Override
+            public long applyAsLong(long currentValue) {
+                return currentValue + increment + (currentValue == -1 ? 1 : 0);
+            }
+
+        });
     }
 
     protected final void collect() {
@@ -57,5 +87,9 @@ abstract class ProcfsEntry {
     protected abstract void reset();
 
     protected abstract void handle(Collection<String> lines);
+
+    protected AtomicLong defaultValue() {
+        return new AtomicLong(-1L);
+    }
 
 }

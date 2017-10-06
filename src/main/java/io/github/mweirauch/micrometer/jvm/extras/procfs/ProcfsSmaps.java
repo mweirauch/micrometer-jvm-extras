@@ -17,15 +17,12 @@ package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongUnaryOperator;
 
 public class ProcfsSmaps extends ProcfsEntry {
 
-    public enum KEY {
+    public enum KEY implements ValueKey {
         /**
          * Virtual set size
          */
@@ -49,8 +46,6 @@ public class ProcfsSmaps extends ProcfsEntry {
     }
 
     private static final int KILOBYTE = 1024;
-
-    private final Map<KEY, AtomicLong> values = new HashMap<>();
 
     public ProcfsSmaps() {
         super(ProcfsReader.getInstance("smaps"));
@@ -82,26 +77,6 @@ public class ProcfsSmaps extends ProcfsEntry {
                 inc(KEY.SWAPPSS, parseKiloBytes(line) * KILOBYTE);
             }
         }
-    }
-
-    public Long get(KEY key) {
-        Objects.requireNonNull(key);
-
-        collect();
-        return Long.valueOf(values.get(key).longValue());
-    }
-
-    private void inc(KEY key, long increment) {
-        Objects.requireNonNull(key);
-
-        values.get(key).getAndUpdate(new LongUnaryOperator() {
-
-            @Override
-            public long applyAsLong(long currentValue) {
-                return currentValue + increment + (currentValue == -1 ? 1 : 0);
-            }
-
-        });
     }
 
     private static long parseKiloBytes(String line) {
