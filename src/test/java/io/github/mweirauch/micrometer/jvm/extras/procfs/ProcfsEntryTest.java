@@ -26,10 +26,10 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 
@@ -90,10 +90,8 @@ public class ProcfsEntryTest {
         verify(readResult).getLines();
         verifyNoMoreInteractions(readResult);
         verify(entry).get(TestKey.ONE);
-        verify(entry).reset();
         verify(entry).handle(lines1);
         verify(entry).defaultValue();
-        verify(entry).inc(TestKey.ONE, 1);
         verifyNoMoreInteractions(entry);
     }
 
@@ -116,9 +114,7 @@ public class ProcfsEntryTest {
         verify(readResult, times(2)).getReadTime();
         verify(readResult).getLines();
         verifyNoMoreInteractions(readResult);
-        verify(entry).reset();
         verify(entry).handle(lines1);
-        verify(entry).inc(TestKey.ONE, 1L);
         verifyNoMoreInteractions(entry);
     }
 
@@ -149,13 +145,9 @@ public class ProcfsEntryTest {
         verify(readResult1, times(2)).getReadTime();
         verify(readResult1, times(2)).getLines();
         verifyNoMoreInteractions(readResult1);
-        verify(entry1).reset();
         verify(entry1).handle(lines1);
-        verify(entry1).inc(TestKey.ONE, 1L);
         verifyNoMoreInteractions(entry1);
-        verify(entry2).reset();
         verify(entry2).handle(lines1);
-        verify(entry2).inc(TestKey.ONE, 1L);
         verifyNoMoreInteractions(entry2);
 
         entry2.collect();
@@ -166,13 +158,9 @@ public class ProcfsEntryTest {
         verify(readResult2, times(4)).getReadTime();
         verify(readResult2, times(2)).getLines();
         verifyNoMoreInteractions(readResult2);
-        verify(entry1, times(2)).reset();
         verify(entry1).handle(lines2);
-        verify(entry1, times(2)).inc(TestKey.ONE, 1L);
         verifyNoMoreInteractions(entry1);
-        verify(entry2, times(2)).reset();
         verify(entry2).handle(lines2);
-        verify(entry2, times(2)).inc(TestKey.ONE, 1L);
         verifyNoMoreInteractions(entry2);
     }
 
@@ -187,33 +175,32 @@ public class ProcfsEntryTest {
         }
 
         @Override
-        protected void reset() {
-            EnumSet.allOf(TestKey.class).forEach(key -> values.put(key, new AtomicLong(-1)));
-        }
-
-        @Override
-        protected void handle(Collection<String> lines) {
+        protected Map<ValueKey, Long> handle(Collection<String> lines) {
             Objects.requireNonNull(lines);
+
+            final Map<ValueKey, Long> values = new HashMap<>();
 
             switch (lines.size()) {
             case 0:
                 break;
             case 1:
-                inc(TestKey.ONE, 1);
+                values.put(TestKey.ONE, 1L);
                 break;
             case 2:
-                inc(TestKey.ONE, 1);
-                inc(TestKey.TWO, 2);
+                values.put(TestKey.ONE, 1L);
+                values.put(TestKey.TWO, 2L);
                 break;
             case 3:
-                inc(TestKey.ONE, 1);
-                inc(TestKey.TWO, 2);
-                inc(TestKey.THREE, 3);
+                values.put(TestKey.ONE, 1L);
+                values.put(TestKey.TWO, 2L);
+                values.put(TestKey.THREE, 3L);
                 break;
             default:
                 throw new IllegalArgumentException(
                         "A maximum of 3 lines is supported. Fix your test!");
             }
+
+            return values;
         }
 
     }

@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongUnaryOperator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +34,9 @@ abstract class ProcfsEntry {
 
     private final ProcfsReader reader;
 
-    private long lastHandle = -1;
+    private final Map<ValueKey, Long> values = new HashMap<>();
 
-    protected final Map<ValueKey, AtomicLong> values = new HashMap<>();
+    private long lastHandle = -1;
 
     public interface ValueKey {
         //
@@ -52,44 +50,29 @@ abstract class ProcfsEntry {
         Objects.requireNonNull(key);
 
         collect();
-        return Long.valueOf(values.getOrDefault(key, defaultValue()).longValue());
+        return values.getOrDefault(key, defaultValue());
     }
 
-    protected void inc(ValueKey key, long increment) {
-        Objects.requireNonNull(key);
-
-        values.get(key).getAndUpdate(new LongUnaryOperator() {
-
-            @Override
-            public long applyAsLong(long currentValue) {
-                return currentValue + increment + (currentValue == -1 ? 1 : 0);
-            }
-
-        });
-    }
-
-    protected final void collect() {
+    /* default */ final void collect() {
         synchronized (lock) {
             try {
                 final ReadResult result = reader.read();
                 if (result != null && (lastHandle == -1 || lastHandle != result.getReadTime())) {
-                    reset();
-                    handle(result.getLines());
+                    values.clear();
+                    values.putAll(handle(result.getLines()));
                     lastHandle = result.getReadTime();
                 }
             } catch (IOException e) {
-                reset();
+                values.clear();
                 log.warn("Failed reading '" + reader.getEntryPath() + "'!", e);
             }
         }
     }
 
-    protected abstract void reset();
+    protected abstract Map<ValueKey, Long> handle(Collection<String> lines);
 
-    protected abstract void handle(Collection<String> lines);
-
-    protected AtomicLong defaultValue() {
-        return new AtomicLong(-1L);
+    protected Long defaultValue() {
+        return Long.valueOf(-1L);
     }
 
 }
