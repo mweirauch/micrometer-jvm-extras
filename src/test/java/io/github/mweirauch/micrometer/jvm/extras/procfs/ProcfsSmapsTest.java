@@ -62,22 +62,22 @@ public class ProcfsSmapsTest {
     public void testSimple() {
         final ProcfsSmaps uut = new ProcfsSmaps(new ProcfsReader(BASE, "smaps-001.txt"));
 
-        assertEquals(Long.valueOf(4096), uut.get(KEY.VSS));
-        assertEquals(Long.valueOf(4096), uut.get(KEY.RSS));
-        assertEquals(Long.valueOf(2048), uut.get(KEY.PSS));
-        assertEquals(Long.valueOf(0), uut.get(KEY.SWAP));
-        assertEquals(Long.valueOf(-1), uut.get(KEY.SWAPPSS));
+        assertEquals(Double.valueOf(4096), uut.get(KEY.VSS));
+        assertEquals(Double.valueOf(4096), uut.get(KEY.RSS));
+        assertEquals(Double.valueOf(2048), uut.get(KEY.PSS));
+        assertEquals(Double.valueOf(0), uut.get(KEY.SWAP));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.SWAPPSS));
     }
 
     @Test
     public void testComplex() {
         final ProcfsSmaps uut = new ProcfsSmaps(new ProcfsReader(BASE, "smaps-002.txt"));
 
-        assertEquals(Long.valueOf(4318720000L), uut.get(KEY.VSS));
-        assertEquals(Long.valueOf(30535680), uut.get(KEY.RSS));
-        assertEquals(Long.valueOf(20059136), uut.get(KEY.PSS));
-        assertEquals(Long.valueOf(0), uut.get(KEY.SWAP));
-        assertEquals(Long.valueOf(0), uut.get(KEY.SWAPPSS));
+        assertEquals(Double.valueOf(4318720000L), uut.get(KEY.VSS));
+        assertEquals(Double.valueOf(30535680), uut.get(KEY.RSS));
+        assertEquals(Double.valueOf(20059136), uut.get(KEY.PSS));
+        assertEquals(Double.valueOf(0), uut.get(KEY.SWAP));
+        assertEquals(Double.valueOf(0), uut.get(KEY.SWAPPSS));
     }
 
     @Test
@@ -87,11 +87,11 @@ public class ProcfsSmapsTest {
 
         final ProcfsSmaps uut = new ProcfsSmaps(reader);
 
-        assertEquals(Long.valueOf(-1), uut.get(KEY.VSS));
-        assertEquals(Long.valueOf(-1), uut.get(KEY.RSS));
-        assertEquals(Long.valueOf(-1), uut.get(KEY.PSS));
-        assertEquals(Long.valueOf(-1), uut.get(KEY.SWAP));
-        assertEquals(Long.valueOf(-1), uut.get(KEY.SWAPPSS));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.VSS));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.RSS));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.PSS));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.SWAP));
+        assertEquals(Double.valueOf(-1), uut.get(KEY.SWAPPSS));
     }
 
 }

@@ -47,7 +47,7 @@ public class ProcessMemoryMetrics implements MeterBinder {
     }
 
     private Double value(KEY key) {
-        return smaps.get(key).doubleValue();
+        return smaps.get(key);
     }
 
 }

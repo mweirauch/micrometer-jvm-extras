@@ -17,6 +17,8 @@ package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -32,30 +34,45 @@ abstract class ProcfsEntry {
 
     private final ProcfsReader reader;
 
+    private final Map<ValueKey, Double> values = new HashMap<>();
+
     private long lastHandle = -1;
+
+    public interface ValueKey {
+        //
+    }
 
     protected ProcfsEntry(ProcfsReader reader) {
         this.reader = Objects.requireNonNull(reader);
     }
 
-    protected final void collect() {
+    public Double get(ValueKey key) {
+        Objects.requireNonNull(key);
+
+        collect();
+        return values.getOrDefault(key, defaultValue());
+    }
+
+    /* default */ final void collect() {
         synchronized (lock) {
             try {
                 final ReadResult result = reader.read();
                 if (result != null && (lastHandle == -1 || lastHandle != result.getReadTime())) {
-                    reset();
-                    handle(result.getLines());
+                    values.clear();
+                    values.putAll(handle(result.getLines()));
                     lastHandle = result.getReadTime();
                 }
             } catch (IOException e) {
-                reset();
+                values.clear();
                 log.warn("Failed reading '" + reader.getEntryPath() + "'!", e);
             }
         }
     }
 
-    protected abstract void reset();
+    protected abstract Map<ValueKey, Double> handle(Collection<String> lines);
 
-    protected abstract void handle(Collection<String> lines);
+    protected Double defaultValue() {
+        return Double.valueOf(-1);
+    }
 
 }

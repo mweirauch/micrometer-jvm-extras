@@ -16,16 +16,13 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongUnaryOperator;
 
 public class ProcfsSmaps extends ProcfsEntry {
 
-    public enum KEY {
+    public enum KEY implements ValueKey {
         /**
          * Virtual set size
          */
@@ -50,8 +47,6 @@ public class ProcfsSmaps extends ProcfsEntry {
 
     private static final int KILOBYTE = 1024;
 
-    private final Map<KEY, AtomicLong> values = new HashMap<>();
-
     public ProcfsSmaps() {
         super(ProcfsReader.getInstance("smaps"));
     }
@@ -61,53 +56,39 @@ public class ProcfsSmaps extends ProcfsEntry {
     }
 
     @Override
-    protected void reset() {
-        EnumSet.allOf(KEY.class).forEach(key -> values.put(key, new AtomicLong(-1)));
-    }
-
-    @Override
-    protected void handle(Collection<String> lines) {
+    protected Map<ValueKey, Double> handle(Collection<String> lines) {
         Objects.requireNonNull(lines);
 
+        final Map<ValueKey, Double> values = new HashMap<>();
+
         for (final String line : lines) {
+            KEY valueKey = null;
             if (line.startsWith("Size:")) {
-                inc(KEY.VSS, parseKiloBytes(line) * KILOBYTE);
+                valueKey = KEY.VSS;
             } else if (line.startsWith("Rss:")) {
-                inc(KEY.RSS, parseKiloBytes(line) * KILOBYTE);
+                valueKey = KEY.RSS;
             } else if (line.startsWith("Pss:")) {
-                inc(KEY.PSS, parseKiloBytes(line) * KILOBYTE);
+                valueKey = KEY.PSS;
             } else if (line.startsWith("Swap:")) {
-                inc(KEY.SWAP, parseKiloBytes(line) * KILOBYTE);
+                valueKey = KEY.SWAP;
             } else if (line.startsWith("SwapPss:")) {
-                inc(KEY.SWAPPSS, parseKiloBytes(line) * KILOBYTE);
+                valueKey = KEY.SWAPPSS;
+            }
+
+            if (valueKey != null) {
+                final Double kiloBytes = parseKiloBytes(line) * KILOBYTE;
+                values.compute(valueKey, (key, value) -> (value == null) ? kiloBytes
+                        : value.doubleValue() + kiloBytes);
             }
         }
+
+        return values;
     }
 
-    public Long get(KEY key) {
-        Objects.requireNonNull(key);
-
-        collect();
-        return Long.valueOf(values.get(key).longValue());
-    }
-
-    private void inc(KEY key, long increment) {
-        Objects.requireNonNull(key);
-
-        values.get(key).getAndUpdate(new LongUnaryOperator() {
-
-            @Override
-            public long applyAsLong(long currentValue) {
-                return currentValue + increment + (currentValue == -1 ? 1 : 0);
-            }
-
-        });
-    }
-
-    private static long parseKiloBytes(String line) {
+    private static Double parseKiloBytes(String line) {
         Objects.requireNonNull(line);
 
-        return Long.parseLong(line.split("\\s+")[1]);
+        return Double.parseDouble(line.split("\\s+")[1]);
     }
 
 }
