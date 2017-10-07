@@ -56,10 +56,10 @@ public class ProcfsSmaps extends ProcfsEntry {
     }
 
     @Override
-    protected Map<ValueKey, Long> handle(Collection<String> lines) {
+    protected Map<ValueKey, Double> handle(Collection<String> lines) {
         Objects.requireNonNull(lines);
 
-        final Map<ValueKey, Long> values = new HashMap<>();
+        final Map<ValueKey, Double> values = new HashMap<>();
 
         for (final String line : lines) {
             KEY valueKey = null;
@@ -76,19 +76,19 @@ public class ProcfsSmaps extends ProcfsEntry {
             }
 
             if (valueKey != null) {
-                final long kiloBytes = parseKiloBytes(line) * KILOBYTE;
+                final Double kiloBytes = parseKiloBytes(line) * KILOBYTE;
                 values.compute(valueKey, (key, value) -> (value == null) ? kiloBytes
-                        : value.longValue() + kiloBytes);
+                        : value.doubleValue() + kiloBytes);
             }
         }
 
         return values;
     }
 
-    private static long parseKiloBytes(String line) {
+    private static Double parseKiloBytes(String line) {
         Objects.requireNonNull(line);
 
-        return Long.parseLong(line.split("\\s+")[1]);
+        return Double.parseDouble(line.split("\\s+")[1]);
     }
 
 }

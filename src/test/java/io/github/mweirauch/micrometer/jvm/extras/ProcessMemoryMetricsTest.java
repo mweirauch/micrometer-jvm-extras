@@ -51,11 +51,11 @@ public class ProcessMemoryMetricsTest {
 
     @Test
     public void testGetMetrics() throws Exception {
-        when(smaps.get(KEY.VSS)).thenReturn(1L);
-        when(smaps.get(KEY.RSS)).thenReturn(2L);
-        when(smaps.get(KEY.PSS)).thenReturn(3L);
-        when(smaps.get(KEY.SWAP)).thenReturn(4L);
-        when(smaps.get(KEY.SWAPPSS)).thenReturn(5L);
+        when(smaps.get(KEY.VSS)).thenReturn(1D);
+        when(smaps.get(KEY.RSS)).thenReturn(2D);
+        when(smaps.get(KEY.PSS)).thenReturn(3D);
+        when(smaps.get(KEY.SWAP)).thenReturn(4D);
+        when(smaps.get(KEY.SWAPPSS)).thenReturn(5D);
 
         final SimpleMeterRegistry registry = new SimpleMeterRegistry();
         final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(smaps);

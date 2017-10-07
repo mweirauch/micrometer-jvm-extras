@@ -34,7 +34,7 @@ abstract class ProcfsEntry {
 
     private final ProcfsReader reader;
 
-    private final Map<ValueKey, Long> values = new HashMap<>();
+    private final Map<ValueKey, Double> values = new HashMap<>();
 
     private long lastHandle = -1;
 
@@ -46,7 +46,7 @@ abstract class ProcfsEntry {
         this.reader = Objects.requireNonNull(reader);
     }
 
-    public Long get(ValueKey key) {
+    public Double get(ValueKey key) {
         Objects.requireNonNull(key);
 
         collect();
@@ -69,10 +69,10 @@ abstract class ProcfsEntry {
         }
     }
 
-    protected abstract Map<ValueKey, Long> handle(Collection<String> lines);
+    protected abstract Map<ValueKey, Double> handle(Collection<String> lines);
 
-    protected Long defaultValue() {
-        return Long.valueOf(-1L);
+    protected Double defaultValue() {
+        return Double.valueOf(-1);
     }
 
 }

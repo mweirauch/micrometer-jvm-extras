@@ -66,13 +66,13 @@ public class ProcfsEntryTest {
                 // last three calls to get()
                 readResult2, readResult2, readResult2);
 
-        assertEquals(Long.valueOf(1), uut.get(TestKey.ONE));
-        assertEquals(Long.valueOf(2), uut.get(TestKey.TWO));
-        assertEquals(Long.valueOf(3), uut.get(TestKey.THREE));
+        assertEquals(Double.valueOf(1), uut.get(TestKey.ONE));
+        assertEquals(Double.valueOf(2), uut.get(TestKey.TWO));
+        assertEquals(Double.valueOf(3), uut.get(TestKey.THREE));
 
-        assertEquals(Long.valueOf(1), uut.get(TestKey.ONE));
-        assertEquals(Long.valueOf(2), uut.get(TestKey.TWO));
-        assertEquals(Long.valueOf(-1), uut.get(TestKey.THREE));
+        assertEquals(Double.valueOf(1), uut.get(TestKey.ONE));
+        assertEquals(Double.valueOf(2), uut.get(TestKey.TWO));
+        assertEquals(Double.valueOf(-1), uut.get(TestKey.THREE));
     }
 
     @Test
@@ -175,25 +175,25 @@ public class ProcfsEntryTest {
         }
 
         @Override
-        protected Map<ValueKey, Long> handle(Collection<String> lines) {
+        protected Map<ValueKey, Double> handle(Collection<String> lines) {
             Objects.requireNonNull(lines);
 
-            final Map<ValueKey, Long> values = new HashMap<>();
+            final Map<ValueKey, Double> values = new HashMap<>();
 
             switch (lines.size()) {
             case 0:
                 break;
             case 1:
-                values.put(TestKey.ONE, 1L);
+                values.put(TestKey.ONE, 1D);
                 break;
             case 2:
-                values.put(TestKey.ONE, 1L);
-                values.put(TestKey.TWO, 2L);
+                values.put(TestKey.ONE, 1D);
+                values.put(TestKey.TWO, 2D);
                 break;
             case 3:
-                values.put(TestKey.ONE, 1L);
-                values.put(TestKey.TWO, 2L);
-                values.put(TestKey.THREE, 3L);
+                values.put(TestKey.ONE, 1D);
+                values.put(TestKey.TWO, 2D);
+                values.put(TestKey.THREE, 3d);
                 break;
             default:
                 throw new IllegalArgumentException(
