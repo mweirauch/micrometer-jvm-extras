@@ -27,14 +27,20 @@ A set of additional JVM process metrics for [micrometer.io](https://micrometer.i
     /* Plain Java */
     final MeterRegistry registry = new SimpleMeterRegistry();
     new ProcessMemoryMetrics().bindTo(registry);
-
+    new ProcessThreadMetrics().bindTo(registry);
+```
+```java
     /* With Spring */
     @Bean
     public MeterBinder processMemoryMetrics() {
         return new ProcessMemoryMetrics();
     }
-```
 
+    @Bean
+    public MeterBinder processThreadMetrics() {
+        return new ProcessThreadMetrics();
+    }
+```
 
 ## Available Metrics
 
@@ -54,6 +60,13 @@ Please note that `procfs` is only available on Linux-based systems.
 * `process.memory.swappss`: The amount of process memory paged out to swap accounting for
   shared memory among processes. Since Linux 4.3. Will return `-1` if your
   kernel is older. As with `pss`, the most accurate metric to watch.
+
+### ProcessThreadMetrics
+
+`ProcessThreadMetrics` reads process-level thread information from `/proc/self/status`.
+Please note that `procfs` is only available on Linux-based systems.
+
+* `process.threads`: The number of process threads as seen by the operating system.
 
 ## Notes
 * procfs data is cached for `100ms` in order to relief the filesystem pressure
