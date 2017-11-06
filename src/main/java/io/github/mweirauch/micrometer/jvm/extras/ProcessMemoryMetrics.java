@@ -15,13 +15,12 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps;
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps.KEY;
-import io.micrometer.core.instrument.Meter.Id;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 
@@ -41,8 +40,9 @@ public class ProcessMemoryMetrics implements MeterBinder {
     public void bindTo(MeterRegistry registry) {
         for (final KEY key : KEY.values()) {
             final String name = "process.memory." + key.name().toLowerCase(Locale.ENGLISH);
-            final Id meterId = registry.createId(name, Collections.emptyList(), null, "bytes");
-            registry.gauge(meterId, smaps, smapsRef -> value(key));
+            Gauge.builder(name, smaps, smapsRef -> value(key))//
+                    .baseUnit("bytes")//
+                    .register(registry);
         }
     }
 

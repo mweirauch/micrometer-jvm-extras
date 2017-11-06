@@ -15,12 +15,11 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras;
 
-import java.util.Collections;
 import java.util.Objects;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
-import io.micrometer.core.instrument.Meter.Id;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 
@@ -38,9 +37,9 @@ public class ProcessThreadMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        final Id meterId = registry.createId("process.threads", Collections.emptyList(),
-                "The number of process threads");
-        registry.gauge(meterId, status, statusRef -> value(KEY.THREADS));
+        Gauge.builder("process.threads", status, statusRef -> value(KEY.THREADS))//
+                .description("The number of process threads")//
+                .register(registry);
     }
 
     private Double value(KEY key) {
