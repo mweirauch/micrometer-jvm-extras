@@ -16,7 +16,11 @@
 package io.github.mweirauch.micrometer.jvm.extras;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -26,6 +30,7 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps;
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps.KEY;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class ProcessMemoryMetricsTest {
@@ -62,11 +67,28 @@ public class ProcessMemoryMetricsTest {
 
         uut.bindTo(registry);
 
-        assertEquals(1.0, registry.find("process.memory.vss").gauge().get().value(), 0.0);
-        assertEquals(2.0, registry.find("process.memory.rss").gauge().get().value(), 0.0);
-        assertEquals(3.0, registry.find("process.memory.pss").gauge().get().value(), 0.0);
-        assertEquals(4.0, registry.find("process.memory.swap").gauge().get().value(), 0.0);
-        assertEquals(5.0, registry.find("process.memory.swappss").gauge().get().value(), 0.0);
+        final Gauge vss = registry.find("process.memory.vss").gauge().get();
+        assertEquals(1.0, vss.value(), 0.0);
+        assertEquals("bytes", vss.getId().getBaseUnit());
+
+        final Gauge rss = registry.find("process.memory.rss").gauge().get();
+        assertEquals(2.0, rss.value(), 0.0);
+        assertEquals("bytes", rss.getId().getBaseUnit());
+
+        final Gauge pss = registry.find("process.memory.pss").gauge().get();
+        assertEquals(3.0, pss.value(), 0.0);
+        assertEquals("bytes", pss.getId().getBaseUnit());
+
+        final Gauge swap = registry.find("process.memory.swap").gauge().get();
+        assertEquals(4.0, swap.value(), 0.0);
+        assertEquals("bytes", swap.getId().getBaseUnit());
+
+        final Gauge swappss = registry.find("process.memory.swappss").gauge().get();
+        assertEquals(5.0, swappss.value(), 0.0);
+        assertEquals("bytes", swappss.getId().getBaseUnit());
+
+        verify(smaps, times(5)).get(any(KEY.class));
+        verifyNoMoreInteractions(smaps);
     }
 
 }
