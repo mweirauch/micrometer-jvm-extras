@@ -4,8 +4,9 @@ sudo: false
 
 jdk:
   - oraclejdk8
-  - oraclejdk9
   - openjdk8
+
+before_cache: rm -rf $HOME/.m2/repository/io/github/mweirauch/micrometer-jvm-extras
 
 cache:
   directories:
