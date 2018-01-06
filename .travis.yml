@@ -7,7 +7,7 @@ jdk:
   - openjdk8
 
 before_cache:
-  - rm -rfv $HOME/.m2/repository/io/github/mweirauch/micrometer-jvm-extras
+  - rm -rf $HOME/.m2/repository/io/github/mweirauch/micrometer-jvm-extras
 
 cache:
   directories:
