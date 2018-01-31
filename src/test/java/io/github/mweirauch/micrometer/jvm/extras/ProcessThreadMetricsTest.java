@@ -58,7 +58,7 @@ public class ProcessThreadMetricsTest {
 
         uut.bindTo(registry);
 
-        assertEquals(7D, registry.find("process.threads").gauge().get().value(), 0.0);
+        assertEquals(7D, registry.get("process.threads").gauge().value(), 0.0);
     }
 
 }
