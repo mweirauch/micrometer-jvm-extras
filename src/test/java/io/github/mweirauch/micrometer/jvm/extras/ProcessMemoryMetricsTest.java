@@ -67,23 +67,23 @@ public class ProcessMemoryMetricsTest {
 
         uut.bindTo(registry);
 
-        final Gauge vss = registry.find("process.memory.vss").gauge().get();
+        final Gauge vss = registry.get("process.memory.vss").gauge();
         assertEquals(1.0, vss.value(), 0.0);
         assertEquals("bytes", vss.getId().getBaseUnit());
 
-        final Gauge rss = registry.find("process.memory.rss").gauge().get();
+        final Gauge rss = registry.get("process.memory.rss").gauge();
         assertEquals(2.0, rss.value(), 0.0);
         assertEquals("bytes", rss.getId().getBaseUnit());
 
-        final Gauge pss = registry.find("process.memory.pss").gauge().get();
+        final Gauge pss = registry.get("process.memory.pss").gauge();
         assertEquals(3.0, pss.value(), 0.0);
         assertEquals("bytes", pss.getId().getBaseUnit());
 
-        final Gauge swap = registry.find("process.memory.swap").gauge().get();
+        final Gauge swap = registry.get("process.memory.swap").gauge();
         assertEquals(4.0, swap.value(), 0.0);
         assertEquals("bytes", swap.getId().getBaseUnit());
 
-        final Gauge swappss = registry.find("process.memory.swappss").gauge().get();
+        final Gauge swappss = registry.get("process.memory.swappss").gauge();
         assertEquals(5.0, swappss.value(), 0.0);
         assertEquals("bytes", swappss.getId().getBaseUnit());
 
