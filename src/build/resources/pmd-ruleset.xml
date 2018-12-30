@@ -254,8 +254,8 @@
         ref="rulesets/java/j2ee.xml/RemoteSessionInterfaceNamingConvention" />
     <rule ref="rulesets/java/j2ee.xml/StaticEJBFieldShouldBeFinal" />
     <rule ref="rulesets/java/j2ee.xml/UseProperClassLoader" />
-    <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging" />
-    <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardLogStatement">
+    <!-- <rule ref="rulesets/java/logging-jakarta-commons.xml/GuardDebugLogging" /> -->
+    <rule ref="category/java/bestpractices.xml/GuardLogStatement">
         <properties>
             <property name="guardsMethods">
                 <value>isDebugEnabled,isTraceEnabled</value>
@@ -269,7 +269,7 @@
     <rule
         ref="rulesets/java/logging-jakarta-commons.xml/UseCorrectExceptionLogging" />
     <rule ref="rulesets/java/logging-java.xml/AvoidPrintStackTrace" />
-    <rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil" />
+    <!-- <rule ref="rulesets/java/logging-java.xml/GuardLogStatementJavaUtil" /> -->
     <!-- <rule ref="rulesets/java/logging-java.xml/InvalidSlf4jMessageFormat"
         /> -->
     <rule ref="rulesets/java/logging-java.xml/LoggerIsNotStaticFinal" />

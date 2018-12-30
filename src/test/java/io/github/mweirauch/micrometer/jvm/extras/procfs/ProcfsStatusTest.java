@@ -38,7 +38,7 @@ public class ProcfsStatusTest {
 
     @BeforeClass
     public static void beforeClass() throws URISyntaxException {
-        BASE = Paths.get(Class.class.getResource("/procfs/").toURI());
+        BASE = Paths.get(ProcfsStatusTest.class.getResource("/procfs/").toURI());
     }
 
     @Test
