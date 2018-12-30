@@ -1,12 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-oss</artifactId>
-        <version>25</version>
+        <version>27</version>
     </parent>
 
     <groupId>io.github.mweirauch</groupId>
@@ -40,7 +38,10 @@
     </scm>
 
     <properties>
-        <dep.pmd.version>5.6.1</dep.pmd.version>
+        <!-- Pull up versions for Java 11 compatibility. -->
+        <dep.plugin.surefire.version>2.22.1</dep.plugin.surefire.version>
+        <dep.plugin.failsafe.version>2.22.1</dep.plugin.failsafe.version>
+        <dep.plugin.spotbugs.version>3.1.10</dep.plugin.spotbugs.version>
     </properties>
 
     <dependencies>
@@ -64,7 +65,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.13.0</version>
+            <version>2.23.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -96,10 +97,17 @@
                     <printFailingErrors>true</printFailingErrors>
                     <includeTests>true</includeTests>
                     <rulesets>
-                        <ruleset>
-                            src/build/resources/pmd-ruleset.xml
-                        </ruleset>
+                        <ruleset>src/build/resources/pmd-ruleset.xml</ruleset>
                     </rulesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+                <configuration>
+                    <ignoredClassPatterns>
+                        <ignoredClassPattern>.*module-info$</ignoredClassPattern>
+                    </ignoredClassPatterns>
                 </configuration>
             </plugin>
             <plugin>
