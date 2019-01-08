@@ -1,11 +1,11 @@
 # Change Log
 
-## [Unreleased](https://github.com/mweirauch/micrometer-jvm-extras/tree/HEAD)
-
-[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.2...HEAD)
+## [0.1.3](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.1.3) (2019-01-08)
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.2...0.1.3)
 
 **Merged pull requests:**
 
+- Bump guava-testlib from 23.6-jre to 27.0.1-jre [\#12](https://github.com/mweirauch/micrometer-jvm-extras/pull/12) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Update to micrometer-core:1.1.1 [\#11](https://github.com/mweirauch/micrometer-jvm-extras/pull/11) ([mweirauch](https://github.com/mweirauch))
 - Travis CI: also build with openjdk11 [\#10](https://github.com/mweirauch/micrometer-jvm-extras/pull/10) ([mweirauch](https://github.com/mweirauch))
 - update to basepom:25 [\#9](https://github.com/mweirauch/micrometer-jvm-extras/pull/9) ([mweirauch](https://github.com/mweirauch))
