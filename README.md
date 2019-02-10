@@ -69,6 +69,8 @@ Please note that `procfs` is only available on Linux-based systems.
 * `process.threads`: The number of process threads as seen by the operating system.
 
 ## Notes
-* procfs data is cached for `100ms` in order to relief the filesystem pressure
+
+* `procfs` data is cached for `100ms` in order to relief the filesystem pressure
   when `Meter`s based on this data are queried by the registry one after
   another on collection run.
+* Snapshot builds are pushed to [Sonatype Nexus Snapshot Repository](https://oss.sonatype.org/content/repositories/snapshots/io/github/mweirauch/micrometer-jvm-extras/) on successful `master` builds.
