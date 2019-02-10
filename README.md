@@ -29,6 +29,7 @@ A set of additional JVM process metrics for [micrometer.io](https://micrometer.i
     new ProcessMemoryMetrics().bindTo(registry);
     new ProcessThreadMetrics().bindTo(registry);
 ```
+
 ```java
     /* With Spring */
     @Bean
@@ -48,10 +49,11 @@ A set of additional JVM process metrics for [micrometer.io](https://micrometer.i
 
 `ProcessMemoryMetrics` reads process-level memory information from `/proc/self/smaps`.
 All `Meter`s are reporting in `bytes`.
-Please note that `procfs` is only available on Linux-based systems.
+
+> Please note that `procfs` is only available on Linux-based systems.
 
 * `process.memory.vss`: Virtual set size. The amount of virtual memory the process can access.
-   Mostly useles, but included for completeness sake.
+  Mostly useles, but included for completeness sake.
 * `process.memory.rss`: Resident set size. The amount of process memory currently in RAM.
 * `process.memory.pss`: Proportional set size. The amount of process memory currently in RAM,
   accounting for shared pages among processes. This metric is the most accurate in
@@ -64,13 +66,14 @@ Please note that `procfs` is only available on Linux-based systems.
 ### ProcessThreadMetrics
 
 `ProcessThreadMetrics` reads process-level thread information from `/proc/self/status`.
-Please note that `procfs` is only available on Linux-based systems.
+
+> Please note that `procfs` is only available on Linux-based systems.
 
 * `process.threads`: The number of process threads as seen by the operating system.
 
 ## Notes
 
-* `procfs` data is cached for `100ms` in order to relief the filesystem pressure
+* `procfs` data is cached for `1000ms` in order to relief the filesystem pressure
   when `Meter`s based on this data are queried by the registry one after
   another on collection run.
 * Snapshot builds are pushed to [Sonatype Nexus Snapshot Repository](https://oss.sonatype.org/content/repositories/snapshots/io/github/mweirauch/micrometer-jvm-extras/) on successful `master` builds.
