@@ -26,7 +26,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class ProcfsReader {
+
+    private static final Logger log = LoggerFactory.getLogger(ProcfsReader.class);
 
     private static final Map<String, ProcfsReader> instances = new HashMap<>();
 
@@ -38,7 +43,7 @@ class ProcfsReader {
 
     private static final Path BASE = Paths.get("/proc", "self");
 
-    /* default */ static final long CACHE_DURATION_MS = 100;
+    /* default */ static final long CACHE_DURATION_MS = 1000;
 
     /* default */ long lastReadTime = -1;
 
@@ -95,6 +100,11 @@ class ProcfsReader {
         if (!osSupport) {
             return Collections.emptyList();
         }
+
+        if (log.isTraceEnabled()) {
+            log.trace("Reading '" + path + "'");
+        }
+
         return Files.readAllLines(path);
     }
 
