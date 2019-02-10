@@ -2,6 +2,11 @@ language: java
 dist: xenial
 sudo: false
 
+env:
+  global:
+    - secure: m1rQP2cS28Y1jcJ2W7X4ciLZWXJiTAFTtcAtBb/jg8Unr8tJ8iCct+gTrrhPn+7f9P90xjOv6dvYdNgsOA0Pi1wd86FMWmHMYuau/4T/oLvJCC/QMu/G1fpZDgOsqQRZSE9eAPXnnOvzCCYkjwfubIfOZuoZKv7XLfOzBd+HDsd5iG9x9qGJAY6Z5WyXzcSE4WqCQTaJC9K+zuIVlN4vdthCIW/LeUKQJeL50PBRpONuSjPBOJhyku1/WHd0OjzZRJKq58MA45Kj4EaTSWvXYhMzeBSUJFMe5Kb0a6E8VTqE0tJRU7KGjxAiwXQt5NFP3MI3R8twZdBRoPMOpkbfam3KqYb9ItPpgYiR5tIOiZKisEUoAXfLWyvjtcPjbTScnNMPtyJ/KpYIk2neNcs4pUC1JYBa/sod7CBRU0XTq/Y6Rc3JvAtiWfP8gRz+Ga2tIQNIU6QIdUcx2DSi9vsT8sKCOHOb3uVHnBaYGFZHZpbmtB2CAhClTzUfH8QmzLBCJ74G1BeXKnpwVtj4BmK9OTYu4L2TMuFUtfwzEBn0pmKk9JpSKJ74hpQ6nd6YLj4eAoUILljos4T0qNP0Y2a8Dg52CKhxWcE2uFklO6UhBCzpo81gL2HdRGbSaQIv2wDwCh9lnjVWAtNd25bXsJjU2bsrLoZCbUYIV+Y4lmYlplM=
+    - secure: Or+uaTsgFvlavC3szpfuY/MgZ/dJ8kBx2dWYwnPHi2HukFV4bnLkjuUr92T3yPhJsMxMCgD3zYDqsmT4JIr2Ba92i+xhoIrolTcW7Ecz3dR0129F05yh/lbZSYgLiiGBTAnqFHfX/pLK9Ymnxp5fZLqz6geOHblc9kGsyO7d50koAVvFiTeT9FVZYtpsAFLIqrYgV3SkWpM1CzwxQGHkLQsVwAZgUB5S2T8GDXvT8xTgBbdfiTdVXme0Rb547O6Vm11/DVZ8KJ3N5Mdpr7dg9gv1t3FFNBxQprzCrqpbBCLIp1WG45+NuNg3S3sgHFRrEZnBynlht62MJgLwSJqB6sTzPCUlNfF9A2yJtdInPgw7jRaa7u7cmDzJSmgDfZqig9oSQPyMkriKUX57qOF7qbXfxIcjY+pJWSEb4QVgnqxvppoXl5myv0by/YT/B8JJ7yyOiKQmtNkw0uo9JUfAiD7fH/042VLExNVgNslTHP78wXIIttoLRDC2kvqsZ59w7kzb487CHyaOW4W9xLLZaq3NfSoV0zneOANC1gnaIcep6qVM2tcwfjjryh//f6/UCzQWBz6HwKb/d2grRNnzjgXPk7LApo5/pJpcxEsvqEwtyrGlcrP0F/rw4l3n6FUmLfFZLihCUtnTWuCXjG2p8ma24VUKsV1LTl8wnNhpr1s=
+
 jdk:
   - openjdk8
   - openjdk11
@@ -11,8 +16,17 @@ before_cache:
 
 cache:
   directories:
-  - $HOME/.m2
+    - "$HOME/.m2"
 
-install: /bin/true
+install: "/bin/true"
 
 script: mvn clean install
+
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: mvn deploy --settings=.maven-settings.xml -DskipTests=true -Dbasepom.check.skip-all=true
+    on:
+      tags: false
+      branch: master
+      jdk: openjdk8

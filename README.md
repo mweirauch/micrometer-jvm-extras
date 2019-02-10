@@ -73,6 +73,7 @@ All `Meter`s are reporting in `bytes`.
 
 ## Notes
 
-* procfs data is cached for `1000ms` in order to relief the filesystem pressure
+* `procfs` data is cached for `1000ms` in order to relief the filesystem pressure
   when `Meter`s based on this data are queried by the registry one after
   another on collection run.
+* Snapshot builds are pushed to [Sonatype Nexus Snapshot Repository](https://oss.sonatype.org/content/repositories/snapshots/io/github/mweirauch/micrometer-jvm-extras/) on successful `master` builds.
