@@ -1,7 +1,8 @@
-.classpath
-.pmd
-.project
-.settings
-target
+/.classpath
 /.checkstyle
-/.sts4-cache/
+/.factorypath
+/.pmd
+/.project
+/.settings
+/.sts4-cache
+/target
