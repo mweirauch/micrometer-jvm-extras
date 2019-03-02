@@ -39,6 +39,7 @@
 
     <properties>
         <slf4j.version>1.7.26</slf4j.version>
+        <jmh.version>1.21</jmh.version>
 
         <!-- Pull up versions for Java 11 compatibility. -->
         <dep.plugin.surefire.version>2.22.1</dep.plugin.surefire.version>
@@ -82,6 +83,18 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>${jmh.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>${jmh.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -91,6 +104,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/*_jmh*.java</excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -98,6 +112,7 @@
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
                     <includeTests>true</includeTests>
+                    <excludes>**/*_jmh*.java</excludes>
                     <rulesets>
                         <ruleset>src/build/resources/pmd-ruleset.xml</ruleset>
                     </rulesets>
@@ -126,6 +141,21 @@
                         <exclude>src/build/resources/**/*.*</exclude>
                         <exclude>src/test/resources/**/*.*</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Help Eclipse processing the JMH benchmarks. -->
+                    <!-- (Otherwise META-INF/BenchmarkList is not generated.) -->
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.openjdk.jmh</groupId>
+                            <artifactId>jmh-generator-annprocess</artifactId>
+                            <version>${jmh.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
