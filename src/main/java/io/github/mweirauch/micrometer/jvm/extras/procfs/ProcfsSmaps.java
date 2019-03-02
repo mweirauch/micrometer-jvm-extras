@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProcfsSmaps extends ProcfsEntry {
 
@@ -44,6 +46,8 @@ public class ProcfsSmaps extends ProcfsEntry {
          */
         SWAPPSS
     }
+
+    private static final Pattern LINE_PATTERN = Pattern.compile("^\\w+:\\s+(\\d+)\\skB$");
 
     private static final int KILOBYTE = 1024;
 
@@ -88,7 +92,12 @@ public class ProcfsSmaps extends ProcfsEntry {
     private static Double parseKiloBytes(String line) {
         Objects.requireNonNull(line);
 
-        return Double.parseDouble(line.split("\\s+")[1]);
+        final Matcher matcher = LINE_PATTERN.matcher(line);
+        if (!matcher.matches()) {
+            return Double.NaN;
+        }
+
+        return Double.parseDouble(matcher.group(1));
     }
 
 }
