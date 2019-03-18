@@ -40,11 +40,6 @@
     <properties>
         <slf4j.version>1.7.26</slf4j.version>
         <jmh.version>1.21</jmh.version>
-
-        <!-- Pull up versions for Java 11 compatibility. -->
-        <dep.plugin.surefire.version>2.22.1</dep.plugin.surefire.version>
-        <dep.plugin.failsafe.version>2.22.1</dep.plugin.failsafe.version>
-        <dep.plugin.spotbugs.version>3.1.10</dep.plugin.spotbugs.version>
     </properties>
 
     <dependencies>
