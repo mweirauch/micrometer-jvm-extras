@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,34 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsEntry.ValueKey;
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsReader.ReadResult;
 
 public class ProcfsEntryTest {
 
-    private final ProcfsReader reader = mock(ProcfsReader.class);
+    private final TestProcfsReader reader = spy(new TestProcfsReader());
 
     private final ProcfsEntry uut = new TestProcfsEntry(reader);
 
@@ -56,112 +58,37 @@ public class ProcfsEntryTest {
 
     @Test
     public void testValueHandling() throws IOException {
-        final List<String> lines1 = Arrays.asList("1", "2", "3");
-        final List<String> lines2 = Arrays.asList("1", "2");
-        final ReadResult readResult1 = new ReadResult(lines1, 0);
-        final ReadResult readResult2 = new ReadResult(lines2, 1);
-        when(reader.read()).thenReturn(
-                // first three calls to get()
-                readResult1, readResult1, readResult1,
-                // last three calls to get()
-                readResult2, readResult2, readResult2);
+        reader.addTestLines(Arrays.asList("1", "2", "3"));
+        reader.addTestLines(Arrays.asList("1", "2"));
 
-        assertEquals(Double.valueOf(1), uut.get(TestKey.ONE));
-        assertEquals(Double.valueOf(2), uut.get(TestKey.TWO));
-        assertEquals(Double.valueOf(3), uut.get(TestKey.THREE));
+        final ProcfsEntry spy = spy(uut);
+        when(spy.currentTime()).thenReturn(1000L);
 
-        assertEquals(Double.valueOf(1), uut.get(TestKey.ONE));
-        assertEquals(Double.valueOf(2), uut.get(TestKey.TWO));
-        assertEquals(Double.valueOf(-1), uut.get(TestKey.THREE));
+        assertEquals(Double.valueOf(1), spy.get(TestKey.ONE));
+        assertEquals(Double.valueOf(2), spy.get(TestKey.TWO));
+        assertEquals(Double.valueOf(3), spy.get(TestKey.THREE));
+
+        when(spy.currentTime()).thenReturn(2000L);
+
+        assertEquals(Double.valueOf(1), spy.get(TestKey.ONE));
+        assertEquals(Double.valueOf(2), spy.get(TestKey.TWO));
+        assertEquals(Double.valueOf(-1), spy.get(TestKey.THREE));
+
+        // 5 for the checks and 2 for the update of the last handling time
+        verify(spy, times(7)).currentTime();
+        verify(reader, times(2)).read(any());
     }
 
     @Test
-    public void testCollectUpdated() throws Exception {
-        final List<String> lines1 = Arrays.asList("1");
-        final ReadResult readResult = spy(new ReadResult(lines1, 0));
-        when(reader.read()).thenReturn(readResult);
-        final ProcfsEntry entry = spy(uut);
+    public void testReaderFailure() throws IOException {
+        doThrow(new IOException("fail")).when(reader).read(any());
+        final ProcfsEntry spy = spy(uut);
 
-        entry.get(TestKey.ONE);
+        assertEquals(Double.valueOf(-1), spy.get(TestKey.ONE));
+        assertEquals(Double.valueOf(-1), spy.get(TestKey.TWO));
+        assertEquals(Double.valueOf(-1), spy.get(TestKey.THREE));
 
-        verify(reader).read();
-        verifyNoMoreInteractions(reader);
-        verify(readResult).getReadTime();
-        verify(readResult).getLines();
-        verifyNoMoreInteractions(readResult);
-        verify(entry).get(TestKey.ONE);
-        verify(entry).handle(lines1);
-        verify(entry).defaultValue();
-        verifyNoMoreInteractions(entry);
-    }
-
-    @Test
-    public void testCollectCached() throws Exception {
-        final List<String> lines1 = Arrays.asList("1");
-        final ReadResult readResult = spy(new ReadResult(lines1, 0));
-        when(reader.read()).thenReturn(
-                // new
-                readResult,
-                // cached
-                readResult);
-        final ProcfsEntry entry = spy(uut);
-
-        entry.collect();
-        entry.collect();
-
-        verify(reader, times(2)).read();
-        verifyNoMoreInteractions(reader);
-        verify(readResult, times(2)).getReadTime();
-        verify(readResult).getLines();
-        verifyNoMoreInteractions(readResult);
-        verify(entry).handle(lines1);
-        verifyNoMoreInteractions(entry);
-    }
-
-    @Test
-    public void testCollectSharedReader() throws IOException {
-        final List<String> lines1 = Arrays.asList("1");
-        final List<String> lines2 = Arrays.asList("2");
-        final ReadResult readResult1 = spy(new ReadResult(lines1, 0));
-        final ReadResult readResult2 = spy(new ReadResult(lines2, 1));
-        when(reader.read()).thenReturn(
-                // new 1
-                readResult1,
-                // cached 1
-                readResult1,
-                // new 2
-                readResult2,
-                // cached 2
-                readResult2);
-
-        final ProcfsEntry entry1 = spy(uut);
-        final ProcfsEntry entry2 = spy(new TestProcfsEntry(reader));
-
-        entry1.collect();
-        entry2.collect();
-
-        verify(reader, times(2)).read();
-        verifyNoMoreInteractions(reader);
-        verify(readResult1, times(2)).getReadTime();
-        verify(readResult1, times(2)).getLines();
-        verifyNoMoreInteractions(readResult1);
-        verify(entry1).handle(lines1);
-        verifyNoMoreInteractions(entry1);
-        verify(entry2).handle(lines1);
-        verifyNoMoreInteractions(entry2);
-
-        entry2.collect();
-        entry1.collect();
-
-        verify(reader, times(4)).read();
-        verifyNoMoreInteractions(reader);
-        verify(readResult2, times(4)).getReadTime();
-        verify(readResult2, times(2)).getLines();
-        verifyNoMoreInteractions(readResult2);
-        verify(entry1).handle(lines2);
-        verifyNoMoreInteractions(entry1);
-        verify(entry2).handle(lines2);
-        verifyNoMoreInteractions(entry2);
+        verify(spy, times(3)).defaultValue();
     }
 
     private enum TestKey implements ValueKey {
@@ -175,32 +102,51 @@ public class ProcfsEntryTest {
         }
 
         @Override
-        protected Map<ValueKey, Double> handle(Collection<String> lines) {
-            Objects.requireNonNull(lines);
+        protected void handle(Map<ValueKey, Double> values, String line) {
+            Objects.requireNonNull(values);
+            Objects.requireNonNull(line);
 
-            final Map<ValueKey, Double> values = new HashMap<>();
-
-            switch (lines.size()) {
-            case 0:
-                break;
-            case 1:
+            switch (line) {
+            case "1":
                 values.put(TestKey.ONE, 1D);
                 break;
-            case 2:
-                values.put(TestKey.ONE, 1D);
+            case "2":
                 values.put(TestKey.TWO, 2D);
                 break;
-            case 3:
-                values.put(TestKey.ONE, 1D);
-                values.put(TestKey.TWO, 2D);
-                values.put(TestKey.THREE, 3d);
+            case "3":
+                values.put(TestKey.THREE, 3D);
                 break;
             default:
                 throw new IllegalArgumentException(
-                        "A maximum of 3 lines is supported. Fix your test!");
+                        "Only values '1' to '3' are supported. Fix your test!");
+            }
+        }
+
+    }
+
+    private static class TestProcfsReader extends ProcfsReader {
+
+        private static final Logger log = LoggerFactory.getLogger(TestProcfsReader.class);
+
+        private final List<List<String>> testLines = new ArrayList<>();
+
+        private int iterations;
+
+        protected TestProcfsReader() {
+            super(Paths.get("/"), "gone");
+        }
+
+        @Override
+        protected void read(Consumer<String> consumer) throws IOException {
+            if (log.isTraceEnabled()) {
+                log.trace("Reading '" + getEntryPath() + "'");
             }
 
-            return values;
+            testLines.get(iterations++).forEach(consumer);
+        }
+
+        protected void addTestLines(List<String> lines) {
+            this.testLines.add(lines);
         }
 
     }

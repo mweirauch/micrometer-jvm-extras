@@ -15,8 +15,6 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -60,33 +58,28 @@ public class ProcfsSmaps extends ProcfsEntry {
     }
 
     @Override
-    protected Map<ValueKey, Double> handle(Collection<String> lines) {
-        Objects.requireNonNull(lines);
+    protected void handle(Map<ValueKey, Double> values, String line) {
+        Objects.requireNonNull(values);
+        Objects.requireNonNull(line);
 
-        final Map<ValueKey, Double> values = new HashMap<>();
-
-        for (final String line : lines) {
-            KEY valueKey = null;
-            if (line.startsWith("Size:")) {
-                valueKey = KEY.VSS;
-            } else if (line.startsWith("Rss:")) {
-                valueKey = KEY.RSS;
-            } else if (line.startsWith("Pss:")) {
-                valueKey = KEY.PSS;
-            } else if (line.startsWith("Swap:")) {
-                valueKey = KEY.SWAP;
-            } else if (line.startsWith("SwapPss:")) {
-                valueKey = KEY.SWAPPSS;
-            }
-
-            if (valueKey != null) {
-                final Double kiloBytes = parseKiloBytes(line) * KILOBYTE;
-                values.compute(valueKey, (key, value) -> (value == null) ? kiloBytes
-                        : value.doubleValue() + kiloBytes);
-            }
+        KEY valueKey = null;
+        if (line.startsWith("Size:")) {
+            valueKey = KEY.VSS;
+        } else if (line.startsWith("Rss:")) {
+            valueKey = KEY.RSS;
+        } else if (line.startsWith("Pss:")) {
+            valueKey = KEY.PSS;
+        } else if (line.startsWith("Swap:")) {
+            valueKey = KEY.SWAP;
+        } else if (line.startsWith("SwapPss:")) {
+            valueKey = KEY.SWAPPSS;
         }
 
-        return values;
+        if (valueKey != null) {
+            final Double kiloBytes = parseKiloBytes(line) * KILOBYTE;
+            values.compute(valueKey,
+                    (key, value) -> (value == null) ? kiloBytes : value.doubleValue() + kiloBytes);
+        }
     }
 
     private static Double parseKiloBytes(String line) {

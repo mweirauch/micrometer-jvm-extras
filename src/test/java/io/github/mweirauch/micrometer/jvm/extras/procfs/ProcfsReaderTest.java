@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,35 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsReader.ReadResult;
-
 public class ProcfsReaderTest {
 
     private static Path BASE;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
+
+    private final List<String> consumedLines = new ArrayList<>();
+
+    private final Consumer<String> consumer = (line) -> consumedLines.add(line);
 
     @BeforeClass
     public static void beforeClass() throws URISyntaxException {
@@ -59,73 +62,35 @@ public class ProcfsReaderTest {
         npt.testInstanceMethods(uut, Visibility.PACKAGE);
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void testReadProcSelfNonExistant() throws Exception {
-        final ProcfsReader uut = spy(new ProcfsReader(BASE, "stub"));
-        when(uut.read(anyLong())).thenCallRealMethod();
-        when(uut.readPath(any())).thenThrow(new IOException("THROW"));
+        final ProcfsReader uut = new ProcfsReader(BASE, "stub");
 
-        uut.read();
+        expected.expect(NoSuchFileException.class);
+        expected.expectMessage("/procfs/stub");
+
+        uut.read(consumer);
+    }
+
+    @Test
+    public void testNoOsSupport() throws Exception {
+        System.setProperty("os.name", "SomeOS");
+        final ProcfsReader uut = new ProcfsReader(BASE, "stub", false);
+
+        uut.read(consumer);
+
+        assertEquals(0, consumedLines.size());
     }
 
     @Test
     public void testRead() throws Exception {
         final ProcfsReader uut = new ProcfsReader(BASE, "smaps-001.txt");
 
-        final ReadResult result = uut.read();
+        uut.read(consumer);
 
-        assertNotNull(result);
-        assertEquals(17, result.getLines().size());
-        assertEquals("Size:                  4 kB", result.getLines().get(1));
-        assertEquals("Locked:                0 kB", result.getLines().get(16));
-    }
-
-    @Test
-    public void testCacheResultMissInitialAndSubsequent() throws IOException {
-        final ProcfsReader uut = new ProcfsReader(BASE, "smaps-001.txt");
-        final ProcfsReader spy = spy(uut);
-        when(spy.currentTime()).thenReturn(1000L);
-
-        ReadResult result = spy.read(1000L + ProcfsReader.CACHE_DURATION_MS + 10);
-
-        assertEquals(1000L, result.getReadTime());
-        assertEquals(1000L, spy.lastReadTime);
-        assertEquals(spy.lastReadTime, result.getReadTime());
-
-        when(spy.currentTime()).thenReturn(2000L);
-
-        result = spy.read(spy.lastReadTime + ProcfsReader.CACHE_DURATION_MS + 10);
-
-        assertEquals(2000L, result.getReadTime());
-        assertEquals(2000L, spy.lastReadTime);
-        assertEquals(spy.lastReadTime, result.getReadTime());
-
-        verify(spy, times(2)).readPath(any());
-        verify(spy, times(2)).cacheResult(any(), any());
-    }
-
-    @Test
-    public void testCacheResultHit() throws IOException {
-        final ProcfsReader uut = new ProcfsReader(BASE, "smaps-001.txt");
-        final ProcfsReader spy = spy(uut);
-        when(spy.currentTime()).thenReturn(1000L);
-
-        ReadResult result = spy.read();
-
-        assertEquals(1000L, result.getReadTime());
-        assertEquals(1000L, spy.lastReadTime);
-        assertEquals(spy.lastReadTime, result.getReadTime());
-
-        when(spy.currentTime()).thenReturn(2000L);
-
-        result = spy.read(spy.lastReadTime + ProcfsReader.CACHE_DURATION_MS - 10);
-
-        assertEquals(1000L, result.getReadTime());
-        assertEquals(1000L, spy.lastReadTime);
-        assertEquals(spy.lastReadTime, result.getReadTime());
-
-        verify(spy).readPath(any());
-        verify(spy).cacheResult(any(), any());
+        assertEquals(17, consumedLines.size());
+        assertEquals("Size:                  4 kB", consumedLines.get(1));
+        assertEquals("Locked:                0 kB", consumedLines.get(16));
     }
 
     @Test
