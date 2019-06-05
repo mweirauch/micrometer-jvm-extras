@@ -163,4 +163,17 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <!-- false-positive: https://github.com/spotbugs/spotbugs/issues/756 -->
+            <id>spotbugs-jdk11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <properties>
+                <basepom.check.fail-spotbugs>false</basepom.check.fail-spotbugs>
+            </properties>
+        </profile>
+    </profiles>
+
 </project>
