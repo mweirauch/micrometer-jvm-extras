@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,9 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -83,7 +84,7 @@ public class ProcfsSmapsTest {
     @Test
     public void testReturnDefaultValuesOnReaderFailure() throws IOException {
         final ProcfsReader reader = mock(ProcfsReader.class);
-        when(reader.read()).thenThrow(new IOException("THROW"));
+        doThrow(new IOException("fail")).when(reader).read(any());
 
         final ProcfsSmaps uut = new ProcfsSmaps(reader);
 

@@ -15,8 +15,6 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -42,18 +40,13 @@ public class ProcfsStatus extends ProcfsEntry {
     }
 
     @Override
-    protected Map<ValueKey, Double> handle(Collection<String> lines) {
-        Objects.requireNonNull(lines);
+    protected void handle(Map<ValueKey, Double> values, String line) {
+        Objects.requireNonNull(values);
+        Objects.requireNonNull(line);
 
-        final Map<ValueKey, Double> values = new HashMap<>();
-
-        for (final String line : lines) {
-            if (line.startsWith("Threads:")) {
-                values.put(KEY.THREADS, parseValue(line));
-            }
+        if (line.startsWith("Threads:")) {
+            values.put(KEY.THREADS, parseValue(line));
         }
-
-        return values;
     }
 
     private static Double parseValue(String line) {

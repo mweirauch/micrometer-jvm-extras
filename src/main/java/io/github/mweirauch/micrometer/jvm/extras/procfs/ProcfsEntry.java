@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +23,11 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsReader.ReadResult;
-
 abstract class ProcfsEntry {
 
     private static final Logger log = LoggerFactory.getLogger(ProcfsEntry.class);
+
+    private static final long CACHE_DURATION_MS = 1000;
 
     private final Object lock = new Object();
 
@@ -55,13 +54,16 @@ abstract class ProcfsEntry {
 
     /* default */ final void collect() {
         synchronized (lock) {
+            if (lastHandle != -1 && lastHandle + CACHE_DURATION_MS > currentTime()) {
+                return;
+            }
             try {
-                final ReadResult result = reader.read();
-                if (result != null && (lastHandle == -1 || lastHandle != result.getReadTime())) {
-                    values.clear();
-                    values.putAll(handle(result.getLines()));
-                    lastHandle = result.getReadTime();
-                }
+                final Map<ValueKey, Double> handledValues = new HashMap<>();
+                reader.read((line) -> handle(handledValues, line));
+
+                values.clear();
+                values.putAll(handledValues);
+                lastHandle = currentTime();
             } catch (IOException e) {
                 values.clear();
                 log.warn("Failed reading '" + reader.getEntryPath() + "'!", e);
@@ -69,10 +71,15 @@ abstract class ProcfsEntry {
         }
     }
 
-    protected abstract Map<ValueKey, Double> handle(Collection<String> lines);
+    protected abstract void handle(Map<ValueKey, Double> handledValues,
+            String line);
 
     protected Double defaultValue() {
         return Double.valueOf(-1);
+    }
+
+    /* default */ long currentTime() {
+        return System.currentTimeMillis();
     }
 
 }

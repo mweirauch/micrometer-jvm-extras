@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,16 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,15 +37,7 @@ class ProcfsReader {
 
     private static final Object instancesLock = new Object();
 
-    private static final Map<Path, List<String>> data = new HashMap<>();
-
-    private static final Object dataLock = new Object();
-
     private static final Path BASE = Paths.get("/proc", "self");
-
-    /* default */ static final long CACHE_DURATION_MS = 1000;
-
-    /* default */ long lastReadTime = -1;
 
     private final Path entryPath;
 
@@ -59,7 +51,7 @@ class ProcfsReader {
         this(base, entry, true);
     }
 
-    private ProcfsReader(Path base, String entry, boolean forceOSSupport) {
+    /* default */ ProcfsReader(Path base, String entry, boolean forceOSSupport) {
         Objects.requireNonNull(base);
         Objects.requireNonNull(entry);
 
@@ -73,50 +65,31 @@ class ProcfsReader {
         return entryPath;
     }
 
-    /* default */ ReadResult read() throws IOException {
-        return read(currentTime());
+    /* default */ void read(Consumer<String> consumer) throws IOException {
+        readPath(entryPath, consumer);
     }
 
-    /* default */ ReadResult read(long currentTimeMillis) throws IOException {
-        synchronized (dataLock) {
-            final Path key = getEntryPath().getFileName();
-
-            final ReadResult readResult;
-            if (lastReadTime == -1 || lastReadTime + CACHE_DURATION_MS < currentTimeMillis) {
-                final List<String> lines = readPath(entryPath);
-                cacheResult(key, lines);
-                lastReadTime = currentTime();
-                readResult = new ReadResult(lines, lastReadTime);
-            } else {
-                readResult = new ReadResult(data.get(key), lastReadTime);
-            }
-            return readResult;
-        }
-    }
-
-    /* default */ List<String> readPath(Path path) throws IOException {
+    private void readPath(Path path, Consumer<String> consumer) throws IOException {
         Objects.requireNonNull(path);
+        Objects.requireNonNull(consumer);
 
         if (!osSupport) {
-            return Collections.emptyList();
+            return;
         }
 
         if (log.isTraceEnabled()) {
             log.trace("Reading '" + path + "'");
         }
 
-        return Files.readAllLines(path);
-    }
-
-    /* default */ void cacheResult(Path key, List<String> lines) {
-        Objects.requireNonNull(key);
-        Objects.requireNonNull(lines);
-
-        data.put(key, lines);
-    }
-
-    /* default */ long currentTime() {
-        return System.currentTimeMillis();
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            for (;;) {
+                final String line = reader.readLine();
+                if (line == null) {
+                    break;
+                }
+                consumer.accept(line);
+            }
+        }
     }
 
     /* default */ static ProcfsReader getInstance(String entry) {
@@ -130,27 +103,6 @@ class ProcfsReader {
             }
             return reader;
         }
-    }
-
-    /* default */ static class ReadResult {
-
-        private final List<String> lines;
-
-        private final long readTime;
-
-        /* default */ ReadResult(List<String> lines, long readTime) {
-            this.lines = Objects.requireNonNull(lines);
-            this.readTime = readTime;
-        }
-
-        public long getReadTime() {
-            return readTime;
-        }
-
-        public List<String> getLines() {
-            return lines;
-        }
-
     }
 
 }
