@@ -101,7 +101,7 @@ class ProcfsReader {
                 reader = new ProcfsReader(entry);
                 instances.put(entry, reader);
             }
-            return reader;
+            return instances.get(entry);
         }
     }
 
