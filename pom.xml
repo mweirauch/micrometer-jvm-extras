@@ -108,6 +108,7 @@
                     <printFailingErrors>true</printFailingErrors>
                     <includeTests>true</includeTests>
                     <excludes>**/*_jmh*.java</excludes>
+                    <failurePriority>5</failurePriority>
                     <rulesets>
                         <ruleset>src/build/resources/pmd-ruleset.xml</ruleset>
                     </rulesets>

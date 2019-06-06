@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,25 +67,27 @@ public class ProcessMemoryMetricsTest {
 
         uut.bindTo(registry);
 
+        final String expectedUnit = "bytes";
+
         final Gauge vss = registry.get("process.memory.vss").gauge();
         assertEquals(1.0, vss.value(), 0.0);
-        assertEquals("bytes", vss.getId().getBaseUnit());
+        assertEquals(expectedUnit, vss.getId().getBaseUnit());
 
         final Gauge rss = registry.get("process.memory.rss").gauge();
         assertEquals(2.0, rss.value(), 0.0);
-        assertEquals("bytes", rss.getId().getBaseUnit());
+        assertEquals(expectedUnit, rss.getId().getBaseUnit());
 
         final Gauge pss = registry.get("process.memory.pss").gauge();
         assertEquals(3.0, pss.value(), 0.0);
-        assertEquals("bytes", pss.getId().getBaseUnit());
+        assertEquals(expectedUnit, pss.getId().getBaseUnit());
 
         final Gauge swap = registry.get("process.memory.swap").gauge();
         assertEquals(4.0, swap.value(), 0.0);
-        assertEquals("bytes", swap.getId().getBaseUnit());
+        assertEquals(expectedUnit, swap.getId().getBaseUnit());
 
         final Gauge swappss = registry.get("process.memory.swappss").gauge();
         assertEquals(5.0, swappss.value(), 0.0);
-        assertEquals("bytes", swappss.getId().getBaseUnit());
+        assertEquals(expectedUnit, swappss.getId().getBaseUnit());
 
         verify(smaps, times(5)).get(any(KEY.class));
         verifyNoMoreInteractions(smaps);
