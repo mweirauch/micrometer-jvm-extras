@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/mweirauch/micrometer-jvm-extras/tree/HEAD)
-
-[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.3...HEAD)
+## [0.1.4](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.1.4) (2019-06-07)
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.3...0.1.4)
 
 **Implemented enhancements:**
 
@@ -17,6 +16,7 @@
 - Bump mockito-core from 2.26.0 to 2.27.0 [\#28](https://github.com/mweirauch/micrometer-jvm-extras/pull/28) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump micrometer-core from 1.1.3 to 1.1.4 [\#27](https://github.com/mweirauch/micrometer-jvm-extras/pull/27) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump mockito-core from 2.25.1 to 2.26.0 [\#26](https://github.com/mweirauch/micrometer-jvm-extras/pull/26) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Updated PMD ruleset from scratch for 6.x [\#31](https://github.com/mweirauch/micrometer-jvm-extras/pull/31) ([mweirauch](https://github.com/mweirauch))
 - Bump mockito-core from 2.24.5 to 2.25.1 [\#25](https://github.com/mweirauch/micrometer-jvm-extras/pull/25) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump guava-testlib from 27.0.1-jre to 27.1-jre [\#24](https://github.com/mweirauch/micrometer-jvm-extras/pull/24) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump basepom-oss from 27 to 28 [\#21](https://github.com/mweirauch/micrometer-jvm-extras/pull/21) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
