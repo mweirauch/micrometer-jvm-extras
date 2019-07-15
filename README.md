@@ -3,7 +3,7 @@
 A set of additional JVM process metrics for [micrometer.io](https://micrometer.io/).
 
 [![Apache License 2](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/mweirauch/micrometer-jvm-extras/master/LICENSE)
-[![Travis CI](https://img.shields.io/travis/mweirauch/micrometer-jvm-extras.svg?maxAge=300)](https://travis-ci.org/mweirauch/micrometer-jvm-extras)
+[![Travis CI](https://img.shields.io/travis/mweirauch/micrometer-jvm-extras/master.svg?maxAge=300)](https://travis-ci.org/mweirauch/micrometer-jvm-extras)
 [![Codacy grade](https://img.shields.io/codacy/grade/3ace40206b314f72a690a00be45c9a5a.svg?maxAge=300)](https://www.codacy.com/app/mweirauch/micrometer-jvm-extras)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mweirauch/micrometer-jvm-extras.svg?maxAge=300)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.mweirauch%22%20AND%20a%3A%22micrometer-jvm-extras%22)
 
