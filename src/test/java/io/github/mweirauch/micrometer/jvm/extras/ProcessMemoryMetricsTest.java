@@ -28,18 +28,18 @@ import org.junit.Test;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps;
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps.KEY;
+import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
+import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class ProcessMemoryMetricsTest {
 
-    private final ProcfsSmaps smaps = mock(ProcfsSmaps.class);
+    private final ProcfsStatus status = mock(ProcfsStatus.class);
 
     @Test
     public void testNullContract() {
-        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(smaps);
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -56,14 +56,12 @@ public class ProcessMemoryMetricsTest {
 
     @Test
     public void testGetMetrics() throws Exception {
-        when(smaps.get(KEY.VSS)).thenReturn(1D);
-        when(smaps.get(KEY.RSS)).thenReturn(2D);
-        when(smaps.get(KEY.PSS)).thenReturn(3D);
-        when(smaps.get(KEY.SWAP)).thenReturn(4D);
-        when(smaps.get(KEY.SWAPPSS)).thenReturn(5D);
+        when(status.get(KEY.VSS)).thenReturn(1D);
+        when(status.get(KEY.RSS)).thenReturn(2D);
+        when(status.get(KEY.SWAP)).thenReturn(3D);
 
         final SimpleMeterRegistry registry = new SimpleMeterRegistry();
-        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(smaps);
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
 
         uut.bindTo(registry);
 
@@ -77,20 +75,12 @@ public class ProcessMemoryMetricsTest {
         assertEquals(2.0, rss.value(), 0.0);
         assertEquals(expectedUnit, rss.getId().getBaseUnit());
 
-        final Gauge pss = registry.get("process.memory.pss").gauge();
-        assertEquals(3.0, pss.value(), 0.0);
-        assertEquals(expectedUnit, pss.getId().getBaseUnit());
-
         final Gauge swap = registry.get("process.memory.swap").gauge();
-        assertEquals(4.0, swap.value(), 0.0);
+        assertEquals(3.0, swap.value(), 0.0);
         assertEquals(expectedUnit, swap.getId().getBaseUnit());
 
-        final Gauge swappss = registry.get("process.memory.swappss").gauge();
-        assertEquals(5.0, swappss.value(), 0.0);
-        assertEquals(expectedUnit, swappss.getId().getBaseUnit());
-
-        verify(smaps, times(5)).get(any(KEY.class));
-        verifyNoMoreInteractions(smaps);
+        verify(status, times(3)).get(any(KEY.class));
+        verifyNoMoreInteractions(status);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class ProcessThreadMetrics implements MeterBinder {
     private final ProcfsStatus status;
 
     public ProcessThreadMetrics() {
-        this.status = new ProcfsStatus();
+        this.status = ProcfsStatus.getInstance();
     }
 
     /* default */ ProcessThreadMetrics(ProcfsStatus status) {
