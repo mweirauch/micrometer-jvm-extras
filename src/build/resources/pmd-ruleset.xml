@@ -47,6 +47,11 @@
         <exclude name="FieldNamingConventions" /> <!-- controversial exclusion -->
         <exclude name="AvoidFinalLocalVariable" />
     </rule>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Holder)" />
+        </properties>
+    </rule>
 
     <rule ref="category/java/design.xml">
         <exclude name="LoosePackageCoupling" />

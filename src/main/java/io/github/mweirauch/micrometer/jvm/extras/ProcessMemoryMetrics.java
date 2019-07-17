@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,36 +18,36 @@ package io.github.mweirauch.micrometer.jvm.extras;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps;
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsSmaps.KEY;
+import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
+import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 
 public class ProcessMemoryMetrics implements MeterBinder {
 
-    private final ProcfsSmaps smaps;
+    private final ProcfsStatus status;
 
     public ProcessMemoryMetrics() {
-        this.smaps = new ProcfsSmaps();
+        this.status = ProcfsStatus.getInstance();
     }
 
-    /* default */ ProcessMemoryMetrics(ProcfsSmaps smaps) {
-        this.smaps = Objects.requireNonNull(smaps);
+    /* default */ ProcessMemoryMetrics(ProcfsStatus status) {
+        this.status = Objects.requireNonNull(status);
     }
 
     @Override
     public void bindTo(MeterRegistry registry) {
         for (final KEY key : KEY.values()) {
             final String name = "process.memory." + key.name().toLowerCase(Locale.ENGLISH);
-            Gauge.builder(name, smaps, smapsRef -> value(key))//
+            Gauge.builder(name, status, statusRef -> value(key))//
                     .baseUnit("bytes")//
                     .register(registry);
         }
     }
 
     private Double value(KEY key) {
-        return smaps.get(key);
+        return status.get(key);
     }
 
 }

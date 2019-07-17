@@ -16,6 +16,7 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -53,10 +54,9 @@ public class ProcfsStatusTest {
         npt.testInstanceMethods(uut, Visibility.PACKAGE);
     }
 
-    @SuppressWarnings("unused")
     @Test
     public void testInstantiation() {
-        new ProcfsStatus();
+        assertSame(ProcfsStatus.getInstance(), ProcfsStatus.getInstance());
     }
 
     @Test
@@ -64,6 +64,9 @@ public class ProcfsStatusTest {
         final ProcfsStatus uut = new ProcfsStatus(new ProcfsReader(BASE, "status-001.txt"));
 
         assertEquals(Double.valueOf(55), uut.get(KEY.THREADS));
+        assertEquals(Double.valueOf(8678297600L), uut.get(KEY.VSS));
+        assertEquals(Double.valueOf(1031479296L), uut.get(KEY.RSS));
+        assertEquals(Double.valueOf(0), uut.get(KEY.SWAP));
     }
 
     @Test

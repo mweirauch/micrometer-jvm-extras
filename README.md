@@ -47,18 +47,26 @@ A set of additional JVM process metrics for [micrometer.io](https://micrometer.i
 
 ### ProcessMemoryMetrics
 
-`ProcessMemoryMetrics` reads process-level memory information from `/proc/self/smaps`.
+`ProcessMemoryMetrics` reads process-level memory information from `/proc/self/status`.
 All `Meter`s are reporting in `bytes`.
 
 > Please note that `procfs` is only available on Linux-based systems.
 
 * `process.memory.vss`: Virtual set size. The amount of virtual memory the process can access.
-  Mostly useles, but included for completeness sake.
+  Mostly irrelevant, but included for completeness sake.
 * `process.memory.rss`: Resident set size. The amount of process memory currently in RAM.
+* `process.memory.swap`: The amount of process memory paged out to swap.
+
+> Starting with `0.2.0` support for proportional set size metrics (`pss` and `swappss`) will
+> be dropped. The reasoning behind this is the overhead of processing the huge `/proc/self/smaps` file
+> which in turn imposes a CPU, memory and query duration overhead in bigger processes.
+> Instrumentation should be accurate and lightweight and the non-proportional set size metrics (`rss` and
+> `swap`) provide these properties as they are still the de-facto go-to information with regard to
+> memory utilization.
+
 * `process.memory.pss`: Proportional set size. The amount of process memory currently in RAM,
   accounting for shared pages among processes. This metric is the most accurate in
   terms of "real" memory usage.
-* `process.memory.swap`: The amount of process memory paged out to swap.
 * `process.memory.swappss`: The amount of process memory paged out to swap accounting for
   shared memory among processes. Since Linux 4.3. Will return `-1` if your
   kernel is older. As with `pss`, the most accurate metric to watch.
