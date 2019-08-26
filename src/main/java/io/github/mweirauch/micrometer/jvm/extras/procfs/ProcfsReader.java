@@ -77,9 +77,7 @@ class ProcfsReader {
             return;
         }
 
-        if (log.isTraceEnabled()) {
-            log.trace("Reading '" + path + "'");
-        }
+        log.trace("Reading '{}'", path);
 
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             for (;;) {

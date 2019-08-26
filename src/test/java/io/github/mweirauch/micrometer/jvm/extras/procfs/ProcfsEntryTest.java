@@ -138,9 +138,7 @@ public class ProcfsEntryTest {
 
         @Override
         protected void read(Consumer<String> consumer) throws IOException {
-            if (log.isTraceEnabled()) {
-                log.trace("Reading '" + getEntryPath() + "'");
-            }
+            log.trace("Reading '{}'", getEntryPath());
 
             testLines.get(iterations++).forEach(consumer);
         }
