@@ -59,7 +59,7 @@ abstract class ProcfsEntry {
             }
             try {
                 final Map<ValueKey, Double> handledValues = new HashMap<>();
-                reader.read((line) -> handle(handledValues, line));
+                reader.read(line -> handle(handledValues, line));
 
                 values.clear();
                 values.putAll(handledValues);
@@ -71,8 +71,7 @@ abstract class ProcfsEntry {
         }
     }
 
-    protected abstract void handle(Map<ValueKey, Double> handledValues,
-            String line);
+    protected abstract void handle(Map<ValueKey, Double> handledValues, String line);
 
     protected Double defaultValue() {
         return Double.valueOf(-1);
