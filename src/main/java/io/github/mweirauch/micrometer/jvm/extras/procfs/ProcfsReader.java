@@ -96,12 +96,7 @@ class ProcfsReader {
         Objects.requireNonNull(entry);
 
         synchronized (instancesLock) {
-            ProcfsReader reader = instances.get(entry);
-            if (reader == null) {
-                reader = new ProcfsReader(entry);
-                instances.put(entry, reader);
-            }
-            return instances.get(entry);
+            return instances.computeIfAbsent(entry, e -> new ProcfsReader(e));
         }
     }
 
