@@ -20,12 +20,12 @@ cache:
 
 install: "/bin/true"
 
-script: mvn clean install
+script: mvn -B clean install
 
 deploy:
   - provider: script
     skip_cleanup: true
-    script: mvn deploy --settings=.maven-settings.xml -DskipTests=true -Dbasepom.check.skip-all=true
+    script: mvn -B deploy --settings=.maven-settings.xml -DskipTests=true -Dbasepom.check.skip-all=true
     on:
       tags: false
       branch: master
