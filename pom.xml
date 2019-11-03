@@ -9,7 +9,7 @@
 
     <groupId>io.github.mweirauch</groupId>
     <artifactId>micrometer-jvm-extras</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.2.0</version>
 
     <name>${project.artifactId}</name>
     <description>A set of additional JVM process metrics for micrometer.io.</description>
@@ -34,7 +34,7 @@
         <connection>scm:git:https://github.com/mweirauch/micrometer-jvm-extras.git</connection>
         <developerConnection>scm:git:https://github.com/mweirauch/micrometer-jvm-extras.git</developerConnection>
         <url>https://github.com/mweirauch/micrometer-jvm-extras</url>
-        <tag>HEAD</tag>
+        <tag>0.2.0</tag>
     </scm>
 
     <properties>
