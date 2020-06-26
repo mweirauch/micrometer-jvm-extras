@@ -18,6 +18,7 @@ package io.github.mweirauch.micrometer.jvm.extras.procfs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 
 import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
@@ -28,9 +29,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -38,9 +37,6 @@ import com.google.common.testing.NullPointerTester.Visibility;
 public class ProcfsReaderTest {
 
     private static Path BASE;
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
 
     private final List<String> consumedLines = new ArrayList<>();
 
@@ -66,10 +62,7 @@ public class ProcfsReaderTest {
     public void testReadProcSelfNonExistant() throws Exception {
         final ProcfsReader uut = new ProcfsReader(BASE, "stub");
 
-        expected.expect(NoSuchFileException.class);
-        expected.expectMessage("/procfs/stub");
-
-        uut.read(consumer);
+        assertThrows(NoSuchFileException.class, () -> uut.read(consumer));
     }
 
     @Test
