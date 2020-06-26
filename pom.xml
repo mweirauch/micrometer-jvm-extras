@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-oss</artifactId>
-        <version>29</version>
+        <version>31</version>
     </parent>
 
     <groupId>io.github.mweirauch</groupId>
@@ -103,6 +103,7 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
                     <printFailingErrors>true</printFailingErrors>
