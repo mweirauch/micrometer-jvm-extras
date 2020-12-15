@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.1](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.1) (2020-12-15)
+
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.0...0.2.1)
+
+Maintenance release.
+
+**Merged pull requests:**
+
+- Bump guava-testlib from 30.0-jre to 30.1-jre [\#109](https://github.com/mweirauch/micrometer-jvm-extras/pull/109) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump jmh.version from 1.23 to 1.27 [\#106](https://github.com/mweirauch/micrometer-jvm-extras/pull/106) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump mockito-core from 3.3.3 to 3.6.28 [\#105](https://github.com/mweirauch/micrometer-jvm-extras/pull/105) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump micrometer-core from 1.1.15 to 1.1.19 [\#104](https://github.com/mweirauch/micrometer-jvm-extras/pull/104) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump guava-testlib from 29.0-jre to 30.0-jre [\#101](https://github.com/mweirauch/micrometer-jvm-extras/pull/101) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump junit from 4.13 to 4.13.1 [\#100](https://github.com/mweirauch/micrometer-jvm-extras/pull/100) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump basepom-oss from 29 to 31 [\#75](https://github.com/mweirauch/micrometer-jvm-extras/pull/75) ([mweirauch](https://github.com/mweirauch))
+- Switch to Junit 4.13s assertThrows [\#74](https://github.com/mweirauch/micrometer-jvm-extras/pull/74) ([mweirauch](https://github.com/mweirauch))
+- Bump micrometer-core from 1.1.7 to 1.1.15 [\#73](https://github.com/mweirauch/micrometer-jvm-extras/pull/73) ([mweirauch](https://github.com/mweirauch))
+- Bump guava-testlib from 28.1-jre to 29.0-jre [\#68](https://github.com/mweirauch/micrometer-jvm-extras/pull/68) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump mockito-core from 3.1.0 to 3.3.3 [\#64](https://github.com/mweirauch/micrometer-jvm-extras/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump jmh.version from 1.21 to 1.23 [\#60](https://github.com/mweirauch/micrometer-jvm-extras/pull/60) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump junit from 4.12 to 4.13 [\#58](https://github.com/mweirauch/micrometer-jvm-extras/pull/58) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump slf4j.version from 1.7.28 to 1.7.30 [\#56](https://github.com/mweirauch/micrometer-jvm-extras/pull/56) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+
 ## [0.2.0](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.0) (2019-11-03)
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.4...0.2.0)
