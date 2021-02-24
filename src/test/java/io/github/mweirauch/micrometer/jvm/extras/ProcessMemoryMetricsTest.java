@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,6 +81,8 @@ public class ProcessMemoryMetricsTest {
 
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
+
+        assertEquals(3, registry.getMeters().size());
     }
 
 }
