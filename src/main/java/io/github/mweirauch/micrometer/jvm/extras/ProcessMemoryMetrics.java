@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ public class ProcessMemoryMetrics implements MeterBinder {
     private final ProcfsStatus status;
 
     public ProcessMemoryMetrics() {
-        this.status = ProcfsStatus.getInstance();
+        this(ProcfsStatus.getInstance());
     }
 
     /* default */ ProcessMemoryMetrics(ProcfsStatus status) {
@@ -38,10 +38,11 @@ public class ProcessMemoryMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        for (final KEY key : KEY.values()) {
+        final KEY[] keys = { KEY.VSS, KEY.RSS, KEY.SWAP };
+        for (final KEY key : keys) {
             final String name = "process.memory." + key.name().toLowerCase(Locale.ENGLISH);
-            Gauge.builder(name, status, statusRef -> value(key))//
-                    .baseUnit("bytes")//
+            Gauge.builder(name, status, statusRef -> value(key)) //
+                    .baseUnit("bytes") //
                     .register(registry);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class ProcessThreadMetrics implements MeterBinder {
     private final ProcfsStatus status;
 
     public ProcessThreadMetrics() {
-        this.status = ProcfsStatus.getInstance();
+        this(ProcfsStatus.getInstance());
     }
 
     /* default */ ProcessThreadMetrics(ProcfsStatus status) {
@@ -37,8 +37,8 @@ public class ProcessThreadMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        Gauge.builder("process.threads", status, statusRef -> value(KEY.THREADS))//
-                .description("The number of process threads")//
+        Gauge.builder("process.threads", status, statusRef -> value(KEY.THREADS)) //
+                .description("The number of process threads") //
                 .register(registry);
     }
 
