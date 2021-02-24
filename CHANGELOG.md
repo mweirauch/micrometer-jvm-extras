@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.2](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.2) (2021-02-24)
+
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.1...0.2.2)
+
+**Fixed bugs:**
+
+- Number of threads metered twice [\#116](https://github.com/mweirauch/micrometer-jvm-extras/issues/116)
+
+**Merged pull requests:**
+
+- Fix double registration of process threads [\#117](https://github.com/mweirauch/micrometer-jvm-extras/pull/117) ([mweirauch](https://github.com/mweirauch))
+- Bump junit from 4.13.1 to 4.13.2 [\#114](https://github.com/mweirauch/micrometer-jvm-extras/pull/114) ([dependabot[bot]](https://github.com/apps/dependabot))
+- SonarCloud integration [\#111](https://github.com/mweirauch/micrometer-jvm-extras/pull/111) ([mweirauch](https://github.com/mweirauch))
+- Switch to GitHub Actions [\#110](https://github.com/mweirauch/micrometer-jvm-extras/pull/110) ([mweirauch](https://github.com/mweirauch))
+
 ## [0.2.1](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.1) (2020-12-15)
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.0...0.2.1)
