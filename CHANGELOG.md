@@ -4,6 +4,8 @@
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.1...0.2.2)
 
+A small bugfix release with regard to double registration of process threads under the umbrella of 'ProcessMemoryMetrics'.
+
 **Fixed bugs:**
 
 - Number of threads metered twice [\#116](https://github.com/mweirauch/micrometer-jvm-extras/issues/116)
