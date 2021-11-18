@@ -4,12 +4,16 @@ on:
   push:
   pull_request:
 
+env:
+  DEFAULT_JAVA: 11
+  TARGET_JAVA_CLASS_FILE_VERSION: 52 # Java 8
+
 jobs:
   test:
     name: Test
     strategy:
       matrix:
-        java: [8, 11]
+        java: [11]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
@@ -40,15 +44,18 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean verify
 
+      - name: Verify Java class file version
+        run: 'javap -verbose target/classes/io/github/mweirauch/micrometer/jvm/extras/ProcessMemoryMetrics.class | grep "major version: ${{ env.TARGET_JAVA_CLASS_FILE_VERSION }}"'
+
       - name: SonarCloud analysis
-        if: env.SONAR_TOKEN != null && matrix.java == '11' # support for Java8 build analysis will be removed soon
+        if: env.SONAR_TOKEN != null && matrix.java == env.DEFAULT_JAVA
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B jacoco:report jacoco:report-integration sonar:sonar -Dsonar.organization=mweirauch-github -Dsonar.projectKey=mweirauch_micrometer-jvm-extras -Dsonar.host.url=https://sonarcloud.io
 
       - name: Publish snapshot
-        if: env.OSSRH_USERNAME != null && matrix.os == 'ubuntu-latest' && matrix.java == '8' && github.ref == 'refs/heads/main'
+        if: env.OSSRH_USERNAME != null && matrix.os == 'ubuntu-latest' && matrix.java == env.DEFAULT_JAVA && github.ref == 'refs/heads/main'
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
