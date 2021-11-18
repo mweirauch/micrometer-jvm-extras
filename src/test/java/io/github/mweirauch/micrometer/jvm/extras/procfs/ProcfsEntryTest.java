@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2021 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,7 +138,9 @@ public class ProcfsEntryTest {
 
         @Override
         protected void read(Consumer<String> consumer) throws IOException {
-            log.trace("Reading '{}'", getEntryPath());
+            if (log.isTraceEnabled()) {
+                log.trace("Reading '{}'", getEntryPath());
+            }
 
             testLines.get(iterations++).forEach(consumer);
         }

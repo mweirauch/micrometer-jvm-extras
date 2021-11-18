@@ -11,13 +11,13 @@
             <property name="violationSuppressXPath">
                 <value>
                     <![CDATA[
-//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]
+//ClassOrInterfaceDeclaration[ends-with(@SimpleName, 'Test')]
 //MethodDeclaration[
   @Name='testNullContract'
   and
   count(FormalParameters/FormalParameter)=0
   and
-  ../Annotation/MarkerAnnotation/Name[@Image='Test' or @Image='org.junit.Test']
+  ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]
 ]
                 ]]>
                 </value>
