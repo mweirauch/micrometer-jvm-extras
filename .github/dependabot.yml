@@ -8,4 +8,4 @@ updates:
     ignore:
       - dependency-name: io.micrometer:micrometer-core
         versions:
-          - ">= 1.2" # stick to oldest LTS
+          - ">= 1.8" # stick to oldest, oss-supported LTS version
