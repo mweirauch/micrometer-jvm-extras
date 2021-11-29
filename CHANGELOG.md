@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased](https://github.com/mweirauch/micrometer-jvm-extras/tree/HEAD)
+
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.2...HEAD)
+
+**Maintenance:**
+
+- Bump micrometer-core to 1.7.6 [\#149](https://github.com/mweirauch/micrometer-jvm-extras/pull/149) ([mweirauch](https://github.com/mweirauch))
+- Bump basepom-oss to 42 and switch the build to Java 11 [\#148](https://github.com/mweirauch/micrometer-jvm-extras/pull/148) ([mweirauch](https://github.com/mweirauch))
+- Bump guava-testlib from 30.1-jre to 31.0.1-jre [\#144](https://github.com/mweirauch/micrometer-jvm-extras/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump jmh.version from 1.27 to 1.33 [\#138](https://github.com/mweirauch/micrometer-jvm-extras/pull/138) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump slf4j.version from 1.7.30 to 1.7.32 [\#137](https://github.com/mweirauch/micrometer-jvm-extras/pull/137) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [0.2.2](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.2) (2021-02-24)
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.1...0.2.2)
@@ -10,12 +22,15 @@ A small bugfix release with regard to double registration of process threads und
 
 - Number of threads metered twice [\#116](https://github.com/mweirauch/micrometer-jvm-extras/issues/116)
 
-**Merged pull requests:**
+**Maintenance:**
 
-- Fix double registration of process threads [\#117](https://github.com/mweirauch/micrometer-jvm-extras/pull/117) ([mweirauch](https://github.com/mweirauch))
 - Bump junit from 4.13.1 to 4.13.2 [\#114](https://github.com/mweirauch/micrometer-jvm-extras/pull/114) ([dependabot[bot]](https://github.com/apps/dependabot))
 - SonarCloud integration [\#111](https://github.com/mweirauch/micrometer-jvm-extras/pull/111) ([mweirauch](https://github.com/mweirauch))
 - Switch to GitHub Actions [\#110](https://github.com/mweirauch/micrometer-jvm-extras/pull/110) ([mweirauch](https://github.com/mweirauch))
+
+**Merged pull requests:**
+
+- Fix double registration of process threads [\#117](https://github.com/mweirauch/micrometer-jvm-extras/pull/117) ([mweirauch](https://github.com/mweirauch))
 
 ## [0.2.1](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.2.1) (2020-12-15)
 
@@ -23,7 +38,7 @@ A small bugfix release with regard to double registration of process threads und
 
 Maintenance release.
 
-**Merged pull requests:**
+**Maintenance:**
 
 - Bump guava-testlib from 30.0-jre to 30.1-jre [\#109](https://github.com/mweirauch/micrometer-jvm-extras/pull/109) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump jmh.version from 1.23 to 1.27 [\#106](https://github.com/mweirauch/micrometer-jvm-extras/pull/106) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -47,12 +62,12 @@ Maintenance release.
 This release removes support for the proportional set size metrics 'pss' and 'swappss'. They were quite expensive to collect and added to the metrics collection overhead quite noticeably with a CPU usage and memory allocation penalty. The go-to metrics 'rss' and 'swap' are still there of course.
 
 
-**Implemented enhancements:**
+**Enhancements:**
 
 - Sonar code analysis recommendations [\#47](https://github.com/mweirauch/micrometer-jvm-extras/pull/47) ([mweirauch](https://github.com/mweirauch))
 - Drop support for proportional set size metrics \(pss, swappss\) [\#46](https://github.com/mweirauch/micrometer-jvm-extras/pull/46) ([mweirauch](https://github.com/mweirauch))
 
-**Merged pull requests:**
+**Maintenance:**
 
 - Bump mockito-core from 2.28.2 to 3.1.0 [\#43](https://github.com/mweirauch/micrometer-jvm-extras/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump micrometer-core from 1.1.6 to 1.1.7 [\#42](https://github.com/mweirauch/micrometer-jvm-extras/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -68,14 +83,14 @@ This release removes support for the proportional set size metrics 'pss' and 'sw
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.3...0.1.4)
 
-**Implemented enhancements:**
+**Enhancements:**
 
 - procfs: drop caching of read lines [\#30](https://github.com/mweirauch/micrometer-jvm-extras/pull/30) ([mweirauch](https://github.com/mweirauch))
 - smaps+status: improve line matching performance \(+JMH benchmarks\) [\#22](https://github.com/mweirauch/micrometer-jvm-extras/pull/22) ([mweirauch](https://github.com/mweirauch))
 - Push snapshot builds to Sonatype Nexus repository [\#16](https://github.com/mweirauch/micrometer-jvm-extras/pull/16) ([mweirauch](https://github.com/mweirauch))
 - Increase procfs content cache duration to 1000ms [\#15](https://github.com/mweirauch/micrometer-jvm-extras/pull/15) ([mweirauch](https://github.com/mweirauch))
 
-**Merged pull requests:**
+**Maintenance:**
 
 - Bump mockito-core from 2.27.0 to 2.28.2 [\#29](https://github.com/mweirauch/micrometer-jvm-extras/pull/29) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump mockito-core from 2.26.0 to 2.27.0 [\#28](https://github.com/mweirauch/micrometer-jvm-extras/pull/28) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -96,7 +111,7 @@ This release removes support for the proportional set size metrics 'pss' and 'sw
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.2...0.1.3)
 
-**Merged pull requests:**
+**Maintenance:**
 
 - Bump guava-testlib from 23.6-jre to 27.0.1-jre [\#12](https://github.com/mweirauch/micrometer-jvm-extras/pull/12) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Update to micrometer-core:1.1.1 [\#11](https://github.com/mweirauch/micrometer-jvm-extras/pull/11) ([mweirauch](https://github.com/mweirauch))
@@ -110,7 +125,7 @@ This release removes support for the proportional set size metrics 'pss' and 'sw
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.1...0.1.2)
 
-**Merged pull requests:**
+**Maintenance:**
 
 - update to micrometer-core:1.0.0-rc.3 [\#5](https://github.com/mweirauch/micrometer-jvm-extras/pull/5) ([mweirauch](https://github.com/mweirauch))
 
@@ -118,7 +133,7 @@ This release removes support for the proportional set size metrics 'pss' and 'sw
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.1.0...0.1.1)
 
-**Implemented enhancements:**
+**Enhancements:**
 
 - Meter for process threads [\#3](https://github.com/mweirauch/micrometer-jvm-extras/pull/3) ([mweirauch](https://github.com/mweirauch))
 
@@ -126,9 +141,12 @@ This release removes support for the proportional set size metrics 'pss' and 'sw
 
 - ProcessMemoryMetrics garbage-collected in Spring Configuration [\#1](https://github.com/mweirauch/micrometer-jvm-extras/issues/1)
 
-**Merged pull requests:**
+**Maintenance:**
 
 - update micrometer-core and mockito [\#4](https://github.com/mweirauch/micrometer-jvm-extras/pull/4) ([mweirauch](https://github.com/mweirauch))
+
+**Merged pull requests:**
+
 - Simplify value handling [\#2](https://github.com/mweirauch/micrometer-jvm-extras/pull/2) ([mweirauch](https://github.com/mweirauch))
 
 ## [0.1.0](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.1.0) (2017-09-20)

@@ -1,0 +1,4 @@
+user=mweirauch
+project=micrometer-jvm-extras
+enhancement-label=**Enhancements:**
+add-sections={"Maintenance":{"prefix":"**Maintenance:**","labels":["maintenance","dependencies"]}}
