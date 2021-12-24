@@ -42,7 +42,7 @@
         <tagNameFormat>@{project.version}</tagNameFormat>
 
         <slf4j.version>1.7.32</slf4j.version>
-        <jmh.version>1.33</jmh.version>
+        <jmh.version>1.34</jmh.version>
     </properties>
 
     <dependencies>
