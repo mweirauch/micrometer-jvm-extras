@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class ProcfsReaderTest {
 
     @Test
     public void testNullContract() throws Exception {
-        final ProcfsReader uut = new ProcfsReader(BASE, "smaps-001.txt");
+        final ProcfsReader uut = new ProcfsReader(BASE, "status-001.txt");
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -77,13 +77,13 @@ public class ProcfsReaderTest {
 
     @Test
     public void testRead() throws Exception {
-        final ProcfsReader uut = new ProcfsReader(BASE, "smaps-001.txt");
+        final ProcfsReader uut = new ProcfsReader(BASE, "status-001.txt");
 
         uut.read(consumer);
 
-        assertEquals(17, consumedLines.size());
-        assertEquals("Size:                  4 kB", consumedLines.get(1));
-        assertEquals("Locked:                0 kB", consumedLines.get(16));
+        assertEquals(53, consumedLines.size());
+        assertEquals("VmSize:\t 8474900 kB", consumedLines.get(17));
+        assertEquals("VmRSS:\t 1007304 kB", consumedLines.get(21));
     }
 
     @Test
