@@ -74,8 +74,8 @@ public class ProcfsEntryTest {
         assertEquals(Double.valueOf(2), spy.get(TestKey.TWO));
         assertEquals(Double.valueOf(-1), spy.get(TestKey.THREE));
 
-        // 5 for the checks and 2 for the update of the last handling time
-        verify(spy, times(7)).currentTime();
+        // 5 for the checks and 2 for the update of the last handling time + 1 because of double-checked locking
+        verify(spy, times(8)).currentTime();
         verify(reader, times(2)).read(any());
     }
 
