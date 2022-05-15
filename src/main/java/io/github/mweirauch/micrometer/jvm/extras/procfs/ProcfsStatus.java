@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,15 @@ public class ProcfsStatus extends ProcfsEntry {
         /**
          * Paged out memory
          */
-        SWAP
+        SWAP,
+        /**
+         * Voluntary content switches
+         */
+        VOLUNTARY_CTXT_SWITCHES,
+        /**
+         * Non-voluntary context switches
+         */
+        NONVOLUNTARY_CTXT_SWITCHES
     }
 
     private static final Pattern VAL_LINE_PATTERN = Pattern.compile("^\\w+:\\s+(\\d+)$");
@@ -74,6 +82,10 @@ public class ProcfsStatus extends ProcfsEntry {
             values.put(KEY.RSS, parseKiloBytes(line) * KILOBYTE);
         } else if (line.startsWith("VmSwap:")) {
             values.put(KEY.SWAP, parseKiloBytes(line) * KILOBYTE);
+        } else if (line.startsWith("voluntary_ctxt_switches:")) {
+            values.put(KEY.VOLUNTARY_CTXT_SWITCHES, parseValue(line));
+        } else if (line.startsWith("nonvoluntary_ctxt_switches:")) {
+            values.put(KEY.NONVOLUNTARY_CTXT_SWITCHES, parseValue(line));
         }
     }
 

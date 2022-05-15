@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ public class ProcfsStatusTest {
         assertEquals(Double.valueOf(8678297600L), uut.get(KEY.VSS));
         assertEquals(Double.valueOf(1031479296L), uut.get(KEY.RSS));
         assertEquals(Double.valueOf(0), uut.get(KEY.SWAP));
+        assertEquals(Double.valueOf(4), uut.get(KEY.VOLUNTARY_CTXT_SWITCHES));
+        assertEquals(Double.valueOf(1), uut.get(KEY.NONVOLUNTARY_CTXT_SWITCHES));
     }
 
     @Test

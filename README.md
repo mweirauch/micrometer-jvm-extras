@@ -65,6 +65,12 @@ All `Meter`s are reporting in `bytes`.
 > Please note that `procfs` is only available on Linux-based systems.
 
 * `process.threads`: The number of process threads as seen by the operating system.
+* `process.threads.context.switches.voluntary`: The accumulated number of voluntary context switches since application start.
+  A voluntary context switch occurs when a thread is in a waiting or blocked state and the scheduler switches control to another
+  thread.
+* `process.threads.context.switches.nonvoluntary`: The accumulated number of non-voluntary context switches since application start.
+  An involuntary context switch occurs when a thread consumed the whole time slice it was granted from the scheduler. The thread is
+  suspended and control is switched to another thread.
 
 ## Notes
 

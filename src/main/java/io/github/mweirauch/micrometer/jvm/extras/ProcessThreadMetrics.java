@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras;
 
+import io.micrometer.core.instrument.FunctionCounter;
 import java.util.Objects;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
@@ -39,6 +40,16 @@ public class ProcessThreadMetrics implements MeterBinder {
     public void bindTo(MeterRegistry registry) {
         Gauge.builder("process.threads", status, statusRef -> value(KEY.THREADS)) //
                 .description("The number of process threads") //
+                .register(registry);
+
+        FunctionCounter.builder("process.threads.context.switches.voluntary", //
+                status, statusRef -> value(KEY.VOLUNTARY_CTXT_SWITCHES)) //
+                .description("Voluntary context switches") //
+                .register(registry);
+
+        FunctionCounter.builder("process.threads.context.switches.nonvoluntary", //
+                status, statusRef -> value(KEY.NONVOLUNTARY_CTXT_SWITCHES))//
+                .description("Non-voluntary context switches") //
                 .register(registry);
     }
 
