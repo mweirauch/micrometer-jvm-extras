@@ -15,6 +15,8 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
@@ -27,13 +29,15 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Threads;
+import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.profile.GCProfiler;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
 @State(Scope.Benchmark)
 public class ProcfsStatusBenchmark {
 
@@ -60,6 +64,23 @@ public class ProcfsStatusBenchmark {
     @BenchmarkMode(Mode.SingleShotTime)
     @Fork(value = 5, warmups = 0)
     public void collectSingle() {
+        uub.collect();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @Fork(value = 1, warmups = 0)
+    @Warmup(iterations = 3, time = 5, timeUnit = SECONDS)
+    public void collectAverage() {
+        uub.collect();
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.AverageTime)
+    @Fork(value = 1, warmups = 0)
+    @Threads(4)
+    @Warmup(iterations = 3, time = 5, timeUnit = SECONDS)
+    public void collectAverageContended() {
         uub.collect();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ abstract class ProcfsEntry {
 
     private final Map<ValueKey, Double> values = new HashMap<>();
 
-    private long lastHandle = -1;
+    // used for double-checked locking pattern
+    @SuppressWarnings("PMD.AvoidUsingVolatile")
+    private volatile long lastHandle = -1;
 
     public interface ValueKey {
         //
@@ -53,6 +55,9 @@ abstract class ProcfsEntry {
     }
 
     /* default */ final void collect() {
+        if (lastHandle != -1 && lastHandle + CACHE_DURATION_MS > currentTime()) {
+            return;
+        }
         synchronized (lock) {
             if (lastHandle != -1 && lastHandle + CACHE_DURATION_MS > currentTime()) {
                 return;
