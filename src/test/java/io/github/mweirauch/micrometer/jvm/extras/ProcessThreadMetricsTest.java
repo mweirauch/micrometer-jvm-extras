@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,11 @@
 package io.github.mweirauch.micrometer.jvm.extras;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
@@ -52,6 +56,8 @@ public class ProcessThreadMetricsTest {
     @Test
     public void testGetMetrics() throws Exception {
         when(status.get(KEY.THREADS)).thenReturn(7D);
+        when(status.get(KEY.VOLUNTARY_CTXT_SWITCHES)).thenReturn(4D);
+        when(status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).thenReturn(5D);
 
         final SimpleMeterRegistry registry = new SimpleMeterRegistry();
         final ProcessThreadMetrics uut = new ProcessThreadMetrics(status);
@@ -60,7 +66,16 @@ public class ProcessThreadMetricsTest {
 
         assertEquals(7D, registry.get("process.threads").gauge().value(), 0.0);
 
-        assertEquals(1, registry.getMeters().size());
+        assertEquals(4.0, registry.get("process.threads.context.switches.voluntary")
+                .functionCounter().count(), 0.0);
+
+        assertEquals(5.0, registry.get("process.threads.context.switches.nonvoluntary")
+                .functionCounter().count(), 0.0);
+
+        verify(status, times(3)).get(any(KEY.class));
+        verifyNoMoreInteractions(status);
+
+        assertEquals(3, registry.getMeters().size());
     }
 
 }
