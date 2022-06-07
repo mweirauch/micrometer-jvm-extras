@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class ProcessMemoryMetricsTest {
     }
 
     @Test
-    public void testGetMetrics() throws Exception {
+    public void testGetMetrics() {
         when(status.get(KEY.VSS)).thenReturn(1D);
         when(status.get(KEY.RSS)).thenReturn(2D);
         when(status.get(KEY.SWAP)).thenReturn(3D);
@@ -79,10 +79,27 @@ public class ProcessMemoryMetricsTest {
         assertEquals(3.0, swap.value(), 0.0);
         assertEquals(expectedUnit, swap.getId().getBaseUnit());
 
+        assertEquals(3, registry.getMeters().size());
+
+        verify(status, times(6)).get(any(KEY.class));
+        verifyNoMoreInteractions(status);
+    }
+
+    @Test
+    public void testUnsupported() {
+        when(status.get(KEY.VSS)).thenReturn(-1D);
+        when(status.get(KEY.RSS)).thenReturn(-1D);
+        when(status.get(KEY.SWAP)).thenReturn(-1D);
+
+        final SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
+
+        uut.bindTo(registry);
+
+        assertEquals(0, registry.getMeters().size());
+
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
-
-        assertEquals(3, registry.getMeters().size());
     }
 
 }

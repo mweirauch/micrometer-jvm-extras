@@ -54,7 +54,7 @@ public class ProcessThreadMetricsTest {
     }
 
     @Test
-    public void testGetMetrics() throws Exception {
+    public void testGetMetrics() {
         when(status.get(KEY.THREADS)).thenReturn(7D);
         when(status.get(KEY.VOLUNTARY_CTXT_SWITCHES)).thenReturn(4D);
         when(status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).thenReturn(5D);
@@ -72,10 +72,27 @@ public class ProcessThreadMetricsTest {
         assertEquals(5.0, registry.get("process.threads.context.switches.nonvoluntary")
                 .functionCounter().count(), 0.0);
 
+        assertEquals(3, registry.getMeters().size());
+
+        verify(status, times(6)).get(any(KEY.class));
+        verifyNoMoreInteractions(status);
+    }
+
+    @Test
+    public void testUnsupported() {
+        when(status.get(KEY.THREADS)).thenReturn(-1D);
+        when(status.get(KEY.VOLUNTARY_CTXT_SWITCHES)).thenReturn(-1D);
+        when(status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).thenReturn(-1D);
+
+        final SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        final ProcessThreadMetrics uut = new ProcessThreadMetrics(status);
+
+        uut.bindTo(registry);
+
+        assertEquals(0, registry.getMeters().size());
+
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
-
-        assertEquals(3, registry.getMeters().size());
     }
 
 }
