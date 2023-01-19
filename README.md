@@ -3,7 +3,7 @@
 A set of additional JVM process metrics for [micrometer.io](https://micrometer.io/).
 
 [![Apache License 2](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/mweirauch/micrometer-jvm-extras/main/LICENSE)
-[![Build status](https://img.shields.io/github/workflow/status/mweirauch/micrometer-jvm-extras/CI?logo=GitHub)](https://github.com/mweirauch/micrometer-jvm-extras/actions?query=workflow%3ACI+branch%3Amain)
+[![Build status](https://img.shields.io/github/actions/workflow/status/mweirauch/micrometer-jvm-extras/ci.yml)](https://github.com/mweirauch/micrometer-jvm-extras/actions?query=workflow%3ACI+branch%3Amain)
 [![Quality Gate Status](https://img.shields.io/sonar/alert_status/mweirauch_micrometer-jvm-extras?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=mweirauch_micrometer-jvm-extras)
 [![Coverage](https://img.shields.io/sonar/coverage/mweirauch_micrometer-jvm-extras?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=mweirauch_micrometer-jvm-extras)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.mweirauch/micrometer-jvm-extras.svg?maxAge=300)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.github.mweirauch%22%20AND%20a%3A%22micrometer-jvm-extras%22)
