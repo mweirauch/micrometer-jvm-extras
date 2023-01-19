@@ -4,8 +4,16 @@
 
 [Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.2...HEAD)
 
+**Enhancements:**
+
+- Context switching metrics [\#175](https://github.com/mweirauch/micrometer-jvm-extras/pull/175) ([wyhasany](https://github.com/wyhasany))
+- Minimize lock contention on collecting metrics [\#174](https://github.com/mweirauch/micrometer-jvm-extras/pull/174) ([wyhasany](https://github.com/wyhasany))
+- Add JPMS Automatic-Module-Name [\#158](https://github.com/mweirauch/micrometer-jvm-extras/pull/158) ([mweirauch](https://github.com/mweirauch))
+
 **Maintenance:**
 
+- Fix shields.io GitHub Actions badge [\#201](https://github.com/mweirauch/micrometer-jvm-extras/pull/201) ([mweirauch](https://github.com/mweirauch))
+- Drop smaps code [\#157](https://github.com/mweirauch/micrometer-jvm-extras/pull/157) ([mweirauch](https://github.com/mweirauch))
 - Bump micrometer-core to 1.7.6 [\#149](https://github.com/mweirauch/micrometer-jvm-extras/pull/149) ([mweirauch](https://github.com/mweirauch))
 - Bump basepom-oss to 42 and switch the build to Java 11 [\#148](https://github.com/mweirauch/micrometer-jvm-extras/pull/148) ([mweirauch](https://github.com/mweirauch))
 - Bump guava-testlib from 30.1-jre to 31.0.1-jre [\#144](https://github.com/mweirauch/micrometer-jvm-extras/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
