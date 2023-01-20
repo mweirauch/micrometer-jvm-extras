@@ -38,19 +38,26 @@ public class ProcessThreadMetrics implements MeterBinder {
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        Gauge.builder("process.threads", status, statusRef -> value(KEY.THREADS)) //
-                .description("The number of process threads") //
-                .register(registry);
+        if (status.get(KEY.THREADS) != -1D) {
+            Gauge.builder("process.threads", //
+                    status, statusRef -> value(KEY.THREADS)) //
+                    .description("The number of process threads") //
+                    .register(registry);
+        }
 
-        FunctionCounter.builder("process.threads.context.switches.voluntary", //
-                status, statusRef -> value(KEY.VOLUNTARY_CTXT_SWITCHES)) //
-                .description("Voluntary context switches") //
-                .register(registry);
+        if (status.get(KEY.VOLUNTARY_CTXT_SWITCHES) != -1D) {
+            FunctionCounter.builder("process.threads.context.switches.voluntary", //
+                    status, statusRef -> value(KEY.VOLUNTARY_CTXT_SWITCHES)) //
+                    .description("Voluntary context switches") //
+                    .register(registry);
+        }
 
-        FunctionCounter.builder("process.threads.context.switches.nonvoluntary", //
-                status, statusRef -> value(KEY.NONVOLUNTARY_CTXT_SWITCHES))//
-                .description("Non-voluntary context switches") //
-                .register(registry);
+        if (status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES) != -1D) {
+            FunctionCounter.builder("process.threads.context.switches.nonvoluntary", //
+                    status, statusRef -> value(KEY.NONVOLUNTARY_CTXT_SWITCHES))//
+                    .description("Non-voluntary context switches") //
+                    .register(registry);
+        }
     }
 
     private Double value(KEY key) {

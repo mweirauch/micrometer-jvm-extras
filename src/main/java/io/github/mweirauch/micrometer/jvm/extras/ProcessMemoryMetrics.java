@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2021 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,10 @@ public class ProcessMemoryMetrics implements MeterBinder {
     public void bindTo(MeterRegistry registry) {
         final KEY[] keys = { KEY.VSS, KEY.RSS, KEY.SWAP };
         for (final KEY key : keys) {
+            if (status.get(key) == -1D) {
+                continue;
+            }
+
             final String name = "process.memory." + key.name().toLowerCase(Locale.ENGLISH);
             Gauge.builder(name, status, statusRef -> value(key)) //
                     .baseUnit("bytes") //
