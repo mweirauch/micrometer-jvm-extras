@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ class ProcfsReader {
 
     private static final Map<String, ProcfsReader> instances = new HashMap<>();
 
-    private static final Object instancesLock = new Object();
+    private static final ReentrantLock instancesLock = new ReentrantLock();
 
     private static final Path BASE = Paths.get("/proc", "self");
 
@@ -93,8 +94,11 @@ class ProcfsReader {
     /* default */ static ProcfsReader getInstance(String entry) {
         Objects.requireNonNull(entry);
 
-        synchronized (instancesLock) {
+        try {
+            instancesLock.lock();
             return instances.computeIfAbsent(entry, e -> new ProcfsReader(e));
+        } finally{
+            instancesLock.unlock();
         }
     }
 
