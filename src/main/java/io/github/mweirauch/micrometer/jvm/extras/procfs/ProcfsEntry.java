@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ abstract class ProcfsEntry {
 
     private static final long CACHE_DURATION_MS = 1000;
 
-    private final Object lock = new Object();
+    private final ReentrantLock lock = new ReentrantLock();
 
     private final ProcfsReader reader;
 
@@ -58,7 +59,8 @@ abstract class ProcfsEntry {
         if (lastHandle != -1 && lastHandle + CACHE_DURATION_MS > currentTime()) {
             return;
         }
-        synchronized (lock) {
+        try {
+            lock.lock();
             if (lastHandle != -1 && lastHandle + CACHE_DURATION_MS > currentTime()) {
                 return;
             }
@@ -73,6 +75,8 @@ abstract class ProcfsEntry {
                 values.clear();
                 log.warn("Failed reading '" + reader.getEntryPath() + "'!", e);
             }
+        } finally {
+            lock.unlock();
         }
     }
 
