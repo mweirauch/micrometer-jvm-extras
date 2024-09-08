@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-oss</artifactId>
-        <version>42</version>
+        <version>59</version>
     </parent>
 
     <groupId>io.github.mweirauch</groupId>
@@ -133,16 +134,20 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration>
-                    <header>src/build/resources/license-header.txt</header>
                     <properties>
                         <owner>Michael Weirauch</owner>
                         <email>michael.weirauch@gmail.com</email>
                     </properties>
-                    <excludes>
-                        <exclude>pom.xml</exclude>
-                        <exclude>src/build/resources/**/*.*</exclude>
-                        <exclude>src/test/resources/**/*.*</exclude>
-                    </excludes>
+                    <licenseSets>
+                        <licenseSet>
+                            <header>src/build/resources/license-header.txt</header>
+                            <excludes>
+                                <exclude>pom.xml</exclude>
+                                <exclude>src/build/resources/**/*.*</exclude>
+                                <exclude>src/test/resources/**/*.*</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
                 </configuration>
             </plugin>
             <plugin>
