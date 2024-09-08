@@ -3,9 +3,17 @@ updates:
   - package-ecosystem: maven
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: io.micrometer:micrometer-core
         versions:
-          - ">= 1.8" # stick to oldest, oss-supported LTS version
+          - ">= 1.10" # being a bit conservative here
+      - dependency-name: org.slf4j:slf4j-api
+        versions:
+          - ">= 1.8" # being a bit conservative here
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
