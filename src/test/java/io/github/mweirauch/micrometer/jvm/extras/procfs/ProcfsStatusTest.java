@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -36,16 +37,18 @@ import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 
 public class ProcfsStatusTest {
 
-    private static Path BASE;
+    private static Path basePath;
 
     @BeforeClass
     public static void beforeClass() throws URISyntaxException {
-        BASE = Paths.get(ProcfsStatusTest.class.getResource("/procfs/").toURI());
+        basePath = Paths.get(ProcfsStatusTest.class.getResource("/procfs/").toURI());
     }
 
     @Test
     public void testNullContract() {
         final ProcfsStatus uut = new ProcfsStatus(mock(ProcfsReader.class));
+
+        assertNotNull(uut);
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -61,7 +64,7 @@ public class ProcfsStatusTest {
 
     @Test
     public void testSimple() {
-        final ProcfsStatus uut = new ProcfsStatus(new ProcfsReader(BASE, "status-001.txt"));
+        final ProcfsStatus uut = new ProcfsStatus(new ProcfsReader(basePath, "status-001.txt"));
 
         assertEquals(Double.valueOf(55), uut.get(KEY.THREADS));
         assertEquals(Double.valueOf(8678297600L), uut.get(KEY.VSS));

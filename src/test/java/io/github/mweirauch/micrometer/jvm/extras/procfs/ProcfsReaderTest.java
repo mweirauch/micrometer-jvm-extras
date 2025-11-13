@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThrows;
@@ -26,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,20 +36,20 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 public class ProcfsReaderTest {
 
-    private static Path BASE;
+    private static Path basePath;
 
     private final List<String> consumedLines = new ArrayList<>();
 
-    private final Consumer<String> consumer = (line) -> consumedLines.add(line);
-
     @BeforeClass
     public static void beforeClass() throws URISyntaxException {
-        BASE = Paths.get(ProcfsReaderTest.class.getResource("/procfs/").toURI());
+        basePath = Paths.get(ProcfsReaderTest.class.getResource("/procfs/").toURI());
     }
 
     @Test
-    public void testNullContract() throws Exception {
-        final ProcfsReader uut = new ProcfsReader(BASE, "status-001.txt");
+    public void testNullContract() {
+        final ProcfsReader uut = new ProcfsReader(basePath, "status-001.txt");
+
+        assertNotNull(uut);
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -59,27 +59,27 @@ public class ProcfsReaderTest {
     }
 
     @Test
-    public void testReadProcSelfNonExistant() throws Exception {
-        final ProcfsReader uut = new ProcfsReader(BASE, "stub");
+    public void testReadProcSelfNonExistant() {
+        final ProcfsReader uut = new ProcfsReader(basePath, "stub");
 
-        assertThrows(NoSuchFileException.class, () -> uut.read(consumer));
+        assertThrows(NoSuchFileException.class, () -> uut.read(consumedLines::add));
     }
 
     @Test
     public void testNoOsSupport() throws Exception {
         System.setProperty("os.name", "SomeOS");
-        final ProcfsReader uut = new ProcfsReader(BASE, "stub", false);
+        final ProcfsReader uut = new ProcfsReader(basePath, "stub", false);
 
-        uut.read(consumer);
+        uut.read(consumedLines::add);
 
         assertEquals(0, consumedLines.size());
     }
 
     @Test
     public void testRead() throws Exception {
-        final ProcfsReader uut = new ProcfsReader(BASE, "status-001.txt");
+        final ProcfsReader uut = new ProcfsReader(basePath, "status-001.txt");
 
-        uut.read(consumer);
+        uut.read(consumedLines::add);
 
         assertEquals(53, consumedLines.size());
         assertEquals("VmSize:\t 8474900 kB", consumedLines.get(17));
@@ -87,7 +87,7 @@ public class ProcfsReaderTest {
     }
 
     @Test
-    public void testGetInstance() throws Exception {
+    public void testGetInstance() {
         final ProcfsReader instance1 = ProcfsReader.getInstance("foo");
         final ProcfsReader instance2 = ProcfsReader.getInstance("foo");
 

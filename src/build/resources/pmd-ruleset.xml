@@ -1,30 +1,12 @@
 <?xml version="1.0" ?>
 <ruleset name="micrometer-jvm-extras"
     xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/schema/ruleset_2_0_0.xsd">
     <description>micrometer-jvm-extras PMD ruleset</description>
 
     <rule ref="category/java/bestpractices.xml">
-        <exclude name="JUnitAssertionsShouldIncludeMessage" />
-        <exclude name="JUnitTestContainsTooManyAsserts" />
-    </rule>
-    <rule ref="category/java/bestpractices.xml/JUnitTestsShouldIncludeAssert">
-        <properties>
-            <property name="violationSuppressXPath">
-                <value>
-                    <![CDATA[
-//ClassOrInterfaceDeclaration[ends-with(@SimpleName, 'Test')]
-//MethodDeclaration[
-  @Name='testNullContract'
-  and
-  count(FormalParameters/FormalParameter)=0
-  and
-  ../Annotation/MarkerAnnotation/Name[pmd-java:typeIs('org.junit.Test')]
-]
-                ]]>
-                </value>
-            </property>
-        </properties>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage" />
+        <exclude name="UnitTestContainsTooManyAsserts" />
     </rule>
     <rule ref="category/java/bestpractices.xml/GuardLogStatement">
         <properties>
@@ -39,19 +21,16 @@
 
     <rule ref="category/java/codestyle.xml">
         <exclude name="MethodArgumentCouldBeFinal" />
-        <!-- see CommentDefaultAccessModifier -->
-        <exclude name="DefaultPackage" />
         <exclude name="UseUnderscoresInNumericLiterals" />
         <exclude name="TooManyStaticImports" />
         <exclude name="OnlyOneReturn" />
         <exclude name="AtLeastOneConstructor" />
         <!-- controversial exclusion -->
         <exclude name="FieldNamingConventions" />
-        <exclude name="AvoidFinalLocalVariable" />
     </rule>
-    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <rule ref="category/java/codestyle.xml/LongVariable">
         <properties>
-            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Holder)" />
+            <property name="minimum" value="30" />
         </properties>
     </rule>
 
@@ -62,8 +41,11 @@
 
     <!-- <rule ref="category/java/documentation.xml" /> -->
 
-    <rule ref="category/java/errorprone.xml">
-        <exclude name="DataflowAnomalyAnalysis" />
+    <rule ref="category/java/errorprone.xml" />
+    <rule ref="category/java/errorprone.xml/AssignmentInOperand">
+        <properties>
+            <property name="allowIncrementDecrement" value="true" />
+        </properties>
     </rule>
 
     <rule ref="category/java/multithreading.xml">

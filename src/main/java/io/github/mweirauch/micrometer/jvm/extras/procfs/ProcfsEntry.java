@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2022 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ abstract class ProcfsEntry {
                 lastHandle = currentTime();
             } catch (IOException e) {
                 values.clear();
-                log.warn("Failed reading '" + reader.getEntryPath() + "'!", e);
+                log.warn("Failed reading '{}'!", reader.getEntryPath(), e);
             }
         } finally {
             lock.unlock();

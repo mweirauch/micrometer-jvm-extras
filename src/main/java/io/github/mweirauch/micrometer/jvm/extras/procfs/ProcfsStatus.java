@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class ProcfsStatus extends ProcfsEntry {
 
     private static final int KILOBYTE = 1024;
 
-    private static class InstanceHolder {
+    private static final class InstanceHolder {
 
         /* default */ static final ProcfsStatus INSTANCE = new ProcfsStatus();
 
