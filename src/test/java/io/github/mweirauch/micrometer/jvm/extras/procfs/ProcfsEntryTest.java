@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2024 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
@@ -50,6 +51,8 @@ public class ProcfsEntryTest {
     @Test
     public void testNullContract() {
         final NullPointerTester npt = new NullPointerTester();
+
+        assertNotNull(uut);
 
         npt.testConstructors(uut.getClass(), Visibility.PACKAGE);
         npt.testStaticMethods(uut.getClass(), Visibility.PACKAGE);

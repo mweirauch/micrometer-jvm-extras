@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2022 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package io.github.mweirauch.micrometer.jvm.extras;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -41,6 +42,8 @@ public class ProcessMemoryMetricsTest {
     public void testNullContract() {
         final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
 
+        assertNotNull(uut);
+
         final NullPointerTester npt = new NullPointerTester();
 
         npt.testConstructors(uut.getClass(), Visibility.PACKAGE);
@@ -48,10 +51,11 @@ public class ProcessMemoryMetricsTest {
         npt.testInstanceMethods(uut, Visibility.PACKAGE);
     }
 
-    @SuppressWarnings("unused")
     @Test
     public void testInstantiation() {
-        new ProcessMemoryMetrics();
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics();
+
+        assertNotNull(uut);
     }
 
     @Test

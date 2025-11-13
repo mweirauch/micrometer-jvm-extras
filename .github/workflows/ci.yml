@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  DEFAULT_JAVA: 11
+  DEFAULT_JAVA: 17
   SONAR_JAVA: 17
   TARGET_JAVA_CLASS_FILE_VERSION: 52 # Java 8
 
@@ -15,24 +15,27 @@ jobs:
     name: Test
     strategy:
       matrix:
-        java: [11, 17, 21]
+        java: [17, 21, 25]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
+    env:
+      SONAR_TOKEN_PRESENT: ${{ secrets.SONAR_TOKEN != '' }}
+      CENTRAL_SECRETS_PRESENT: ${{ secrets.CENTRAL_USERNAME != '' && secrets.CENTRAL_TOKEN != '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # SonarCloud doesn't like shallow clones
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Setup Java ${{ matrix.java }}
+        uses: actions/setup-java@v5
         with:
           java-version: ${{ matrix.java }}
           distribution: temurin
           cache: maven
-          server-id: sonatype-nexus-snapshots
-          server-username: OSSRH_USERNAME
-          server-password: OSSRH_PASSWORD
+          server-id: central # basepom repository id
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_TOKEN
 
       - name: Build with Maven
         run: mvn -B clean verify
@@ -41,7 +44,7 @@ jobs:
         run: 'javap -verbose target/classes/io/github/mweirauch/micrometer/jvm/extras/ProcessMemoryMetrics.class | grep "major version: ${{ env.TARGET_JAVA_CLASS_FILE_VERSION }}"'
 
       - name: Cache SonarCloud packages
-        if: env.SONAR_TOKEN != null && matrix.java == env.SONAR_JAVA
+        if: env.SONAR_TOKEN_PRESENT == 'true' && matrix.java == env.SONAR_JAVA
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
@@ -49,15 +52,15 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
 
       - name: SonarCloud analysis
-        if: env.SONAR_TOKEN != null && matrix.java == env.SONAR_JAVA
+        if: env.SONAR_TOKEN_PRESENT == 'true' && matrix.java == env.SONAR_JAVA
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B jacoco:report jacoco:report-integration sonar:sonar -Dsonar.organization=mweirauch-github -Dsonar.projectKey=mweirauch_micrometer-jvm-extras -Dsonar.host.url=https://sonarcloud.io
 
       - name: Publish Snapshot
-        if: env.OSSRH_USERNAME != null && matrix.os == 'ubuntu-latest' && matrix.java == env.DEFAULT_JAVA && github.ref == 'refs/heads/main'
+        if: env.CENTRAL_SECRETS_PRESENT == 'true' && matrix.os == 'ubuntu-latest' && matrix.java == env.DEFAULT_JAVA && github.ref == 'refs/heads/main'
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_TOKEN: ${{ secrets.CENTRAL_TOKEN }}
         run: mvn -B deploy -DskipTests=true -Dbasepom.check.skip-all=true
