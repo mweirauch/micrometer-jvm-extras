@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-oss</artifactId>
-        <version>66</version>
+        <version>67</version>
     </parent>
 
     <groupId>io.github.mweirauch</groupId>
@@ -163,6 +163,10 @@
                             <version>${jmh.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <!-- disable Java 8 compiler level deprecation warning -->
+                        <arg>-Xlint:-options</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
