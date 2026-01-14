@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -34,15 +33,15 @@ import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-public class ProcessMemoryMetricsTest {
+class ProcessMemoryMetricsTest {
 
     private final ProcfsStatus status = mock(ProcfsStatus.class);
 
     @Test
-    public void testNullContract() {
+    void shouldRejectNullParameters() {
         final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -52,14 +51,14 @@ public class ProcessMemoryMetricsTest {
     }
 
     @Test
-    public void testInstantiation() {
+    void shouldInstantiate() {
         final ProcessMemoryMetrics uut = new ProcessMemoryMetrics();
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
     }
 
     @Test
-    public void testGetMetrics() {
+    void shouldRegisterMemoryMetricsForValidValues() {
         when(status.get(KEY.VSS)).thenReturn(1D);
         when(status.get(KEY.RSS)).thenReturn(2D);
         when(status.get(KEY.SWAP)).thenReturn(3D);
@@ -72,25 +71,25 @@ public class ProcessMemoryMetricsTest {
         final String expectedUnit = "bytes";
 
         final Gauge vss = registry.get("process.memory.vss").gauge();
-        assertEquals(1.0, vss.value(), 0.0);
-        assertEquals(expectedUnit, vss.getId().getBaseUnit());
+        assertThat(vss.value()).isEqualTo(1.0);
+        assertThat(vss.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
         final Gauge rss = registry.get("process.memory.rss").gauge();
-        assertEquals(2.0, rss.value(), 0.0);
-        assertEquals(expectedUnit, rss.getId().getBaseUnit());
+        assertThat(rss.value()).isEqualTo(2.0);
+        assertThat(rss.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
         final Gauge swap = registry.get("process.memory.swap").gauge();
-        assertEquals(3.0, swap.value(), 0.0);
-        assertEquals(expectedUnit, swap.getId().getBaseUnit());
+        assertThat(swap.value()).isEqualTo(3.0);
+        assertThat(swap.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
-        assertEquals(3, registry.getMeters().size());
+        assertThat(registry.getMeters().size()).isEqualTo(3);
 
         verify(status, times(6)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
     }
 
     @Test
-    public void testUnsupported() {
+    void shouldSkipRegistrationForUnsupportedValues() {
         when(status.get(KEY.VSS)).thenReturn(-1D);
         when(status.get(KEY.RSS)).thenReturn(-1D);
         when(status.get(KEY.SWAP)).thenReturn(-1D);
@@ -100,7 +99,7 @@ public class ProcessMemoryMetricsTest {
 
         uut.bindTo(registry);
 
-        assertEquals(0, registry.getMeters().size());
+        assertThat(registry.getMeters().size()).isEqualTo(0);
 
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);

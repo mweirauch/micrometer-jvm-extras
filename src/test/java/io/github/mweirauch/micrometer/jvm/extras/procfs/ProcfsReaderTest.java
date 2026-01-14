@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,8 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.URISyntaxException;
 import java.nio.file.NoSuchFileException;
@@ -28,28 +25,28 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
-public class ProcfsReaderTest {
+class ProcfsReaderTest {
 
     private static Path basePath;
 
     private final List<String> consumedLines = new ArrayList<>();
 
-    @BeforeClass
-    public static void beforeClass() throws URISyntaxException {
+    @BeforeAll
+    static void beforeAll() throws URISyntaxException {
         basePath = Paths.get(ProcfsReaderTest.class.getResource("/procfs/").toURI());
     }
 
     @Test
-    public void testNullContract() {
+    void shouldRejectNullParameters() {
         final ProcfsReader uut = new ProcfsReader(basePath, "status-001.txt");
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -59,44 +56,46 @@ public class ProcfsReaderTest {
     }
 
     @Test
-    public void testReadProcSelfNonExistant() {
+    void shouldThrowExceptionForNonexistentFile() {
         final ProcfsReader uut = new ProcfsReader(basePath, "stub");
 
-        assertThrows(NoSuchFileException.class, () -> uut.read(consumedLines::add));
+        assertThatThrownBy(() -> uut.read(consumedLines::add))
+                .isInstanceOf(NoSuchFileException.class);
     }
 
     @Test
-    public void testNoOsSupport() throws Exception {
+    void shouldSkipReadingOnUnsupportedOS() throws Exception {
         System.setProperty("os.name", "SomeOS");
         final ProcfsReader uut = new ProcfsReader(basePath, "stub", false);
 
         uut.read(consumedLines::add);
 
-        assertEquals(0, consumedLines.size());
+        assertThat(consumedLines).isEmpty();
     }
 
     @Test
-    public void testRead() throws Exception {
+    void shouldReadAllLinesFromStatusFile() throws Exception {
         final ProcfsReader uut = new ProcfsReader(basePath, "status-001.txt");
 
         uut.read(consumedLines::add);
 
-        assertEquals(53, consumedLines.size());
-        assertEquals("VmSize:\t 8474900 kB", consumedLines.get(17));
-        assertEquals("VmRSS:\t 1007304 kB", consumedLines.get(21));
+        assertThat(consumedLines).hasSize(53);
+        assertThat(consumedLines.get(17)).isEqualTo("VmSize:\t 8474900 kB");
+        assertThat(consumedLines.get(21)).isEqualTo("VmRSS:\t 1007304 kB");
     }
 
     @Test
-    public void testGetInstance() {
+    void shouldCacheInstancesByEntryName() {
         final ProcfsReader instance1 = ProcfsReader.getInstance("foo");
         final ProcfsReader instance2 = ProcfsReader.getInstance("foo");
 
-        assertSame(instance1, instance2);
+        assertThat(instance1).isSameAs(instance2);
 
         final ProcfsReader instance3 = ProcfsReader.getInstance("bar");
 
-        assertNotSame(instance3, instance1);
-        assertNotSame(instance3, instance2);
+        assertThat(instance3)
+                .isNotSameAs(instance1)
+                .isNotSameAs(instance2);
     }
 
 }

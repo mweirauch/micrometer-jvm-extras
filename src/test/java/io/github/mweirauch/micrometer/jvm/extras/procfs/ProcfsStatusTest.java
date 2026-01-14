@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,7 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -27,28 +25,28 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 
-public class ProcfsStatusTest {
+class ProcfsStatusTest {
 
     private static Path basePath;
 
-    @BeforeClass
-    public static void beforeClass() throws URISyntaxException {
+    @BeforeAll
+    static void beforeAll() throws URISyntaxException {
         basePath = Paths.get(ProcfsStatusTest.class.getResource("/procfs/").toURI());
     }
 
     @Test
-    public void testNullContract() {
+    void shouldRejectNullParameters() {
         final ProcfsStatus uut = new ProcfsStatus(mock(ProcfsReader.class));
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -58,30 +56,30 @@ public class ProcfsStatusTest {
     }
 
     @Test
-    public void testInstantiation() {
-        assertSame(ProcfsStatus.getInstance(), ProcfsStatus.getInstance());
+    void shouldReturnSingletonInstance() {
+        assertThat(ProcfsStatus.getInstance()).isSameAs(ProcfsStatus.getInstance());
     }
 
     @Test
-    public void testSimple() {
+    void shouldParseStatusFileCorrectly() {
         final ProcfsStatus uut = new ProcfsStatus(new ProcfsReader(basePath, "status-001.txt"));
 
-        assertEquals(Double.valueOf(55), uut.get(KEY.THREADS));
-        assertEquals(Double.valueOf(8678297600L), uut.get(KEY.VSS));
-        assertEquals(Double.valueOf(1031479296L), uut.get(KEY.RSS));
-        assertEquals(Double.valueOf(0), uut.get(KEY.SWAP));
-        assertEquals(Double.valueOf(4), uut.get(KEY.VOLUNTARY_CTXT_SWITCHES));
-        assertEquals(Double.valueOf(1), uut.get(KEY.NONVOLUNTARY_CTXT_SWITCHES));
+        assertThat(uut.get(KEY.THREADS)).isEqualTo(55.0);
+        assertThat(uut.get(KEY.VSS)).isEqualTo(8678297600L);
+        assertThat(uut.get(KEY.RSS)).isEqualTo(1031479296L);
+        assertThat(uut.get(KEY.SWAP)).isEqualTo(0.0);
+        assertThat(uut.get(KEY.VOLUNTARY_CTXT_SWITCHES)).isEqualTo(4.0);
+        assertThat(uut.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).isEqualTo(1.0);
     }
 
     @Test
-    public void testReturnDefaultValuesOnReaderFailure() throws IOException {
+    void shouldReturnDefaultOnReadFailure() throws IOException {
         final ProcfsReader reader = mock(ProcfsReader.class);
         doThrow(new IOException("fail")).when(reader).read(any());
 
         final ProcfsStatus uut = new ProcfsStatus(reader);
 
-        assertEquals(Double.valueOf(-1), uut.get(KEY.THREADS));
+        assertThat(uut.get(KEY.THREADS)).isEqualTo(-1.0);
     }
 
 }

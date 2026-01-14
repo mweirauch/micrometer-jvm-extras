@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras.procfs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -33,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,17 +41,17 @@ import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsEntry.ValueKey;
 
-public class ProcfsEntryTest {
+class ProcfsEntryTest {
 
     private final StubProcfsReader reader = spy(new StubProcfsReader());
 
     private final ProcfsEntry uut = new StubProcfsEntry(reader);
 
     @Test
-    public void testNullContract() {
+    void shouldRejectNullParameters() {
         final NullPointerTester npt = new NullPointerTester();
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
 
         npt.testConstructors(uut.getClass(), Visibility.PACKAGE);
         npt.testStaticMethods(uut.getClass(), Visibility.PACKAGE);
@@ -60,37 +59,45 @@ public class ProcfsEntryTest {
     }
 
     @Test
-    public void testValueHandling() throws IOException {
+    void shouldCacheValuesAndRefreshWhenDataChanges() throws IOException {
         reader.addStubLines(Arrays.asList("1", "2", "3"));
         reader.addStubLines(Arrays.asList("1", "2"));
 
         final ProcfsEntry spy = spy(uut);
         when(spy.currentTime()).thenReturn(1000L);
 
-        assertEquals(Double.valueOf(1), spy.get(StubKey.ONE));
-        assertEquals(Double.valueOf(2), spy.get(StubKey.TWO));
-        assertEquals(Double.valueOf(3), spy.get(StubKey.THREE));
+        assertThat(spy.get(StubKey.ONE)).isEqualTo(1.0);
+        assertThat(spy.get(StubKey.TWO)).isEqualTo(2.0);
+        assertThat(spy.get(StubKey.THREE)).isEqualTo(3.0);
 
+        // advance time within the caching window
+        when(spy.currentTime()).thenReturn(1100L);
+
+        assertThat(spy.get(StubKey.ONE)).isEqualTo(1.0);
+        assertThat(spy.get(StubKey.TWO)).isEqualTo(2.0);
+        assertThat(spy.get(StubKey.THREE)).isEqualTo(3.0);
+
+        // advance time beyond the caching window
         when(spy.currentTime()).thenReturn(2000L);
 
-        assertEquals(Double.valueOf(1), spy.get(StubKey.ONE));
-        assertEquals(Double.valueOf(2), spy.get(StubKey.TWO));
-        assertEquals(Double.valueOf(-1), spy.get(StubKey.THREE));
+        assertThat(spy.get(StubKey.ONE)).isEqualTo(1.0);
+        assertThat(spy.get(StubKey.TWO)).isEqualTo(2.0);
+        assertThat(spy.get(StubKey.THREE)).isEqualTo(-1.0);
 
-        // 5 for the checks and 2 for the update of the last handling time + 1 because
+        // 8 for the checks and 2 for the update of the last handling time + 1 because
         // of double-checked locking
-        verify(spy, times(8)).currentTime();
+        verify(spy, times(11)).currentTime();
         verify(reader, times(2)).read(any());
     }
 
     @Test
-    public void testReaderFailure() throws IOException {
+    void shouldReturnDefaultValueWhenReadingFails() throws IOException {
         doThrow(new IOException("fail")).when(reader).read(any());
         final ProcfsEntry spy = spy(uut);
 
-        assertEquals(Double.valueOf(-1), spy.get(StubKey.ONE));
-        assertEquals(Double.valueOf(-1), spy.get(StubKey.TWO));
-        assertEquals(Double.valueOf(-1), spy.get(StubKey.THREE));
+        assertThat(spy.get(StubKey.ONE)).isEqualTo(-1.0);
+        assertThat(spy.get(StubKey.TWO)).isEqualTo(-1.0);
+        assertThat(spy.get(StubKey.THREE)).isEqualTo(-1.0);
 
         verify(spy, times(3)).defaultValue();
     }

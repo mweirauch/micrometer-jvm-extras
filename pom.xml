@@ -43,6 +43,7 @@
         <tagNameFormat>@{project.version}</tagNameFormat>
 
         <slf4j.version>1.7.32</slf4j.version>
+        <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <jmh.version>1.37</jmh.version>
     </properties>
 
@@ -59,9 +60,21 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.27.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
