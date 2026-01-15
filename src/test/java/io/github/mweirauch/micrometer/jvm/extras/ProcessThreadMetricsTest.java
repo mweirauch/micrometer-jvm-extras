@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2017-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  */
 package io.github.mweirauch.micrometer.jvm.extras;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
@@ -33,15 +32,15 @@ import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
-public class ProcessThreadMetricsTest {
+class ProcessThreadMetricsTest {
 
     private final ProcfsStatus status = mock(ProcfsStatus.class);
 
     @Test
-    public void testNullContract() {
+    void shouldRejectNullParameters() {
         final ProcessThreadMetrics uut = new ProcessThreadMetrics(status);
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
 
         final NullPointerTester npt = new NullPointerTester();
 
@@ -51,14 +50,14 @@ public class ProcessThreadMetricsTest {
     }
 
     @Test
-    public void testInstantiation() {
+    void shouldInstantiate() {
         final ProcessThreadMetrics uut = new ProcessThreadMetrics();
 
-        assertNotNull(uut);
+        assertThat(uut).isNotNull();
     }
 
     @Test
-    public void testGetMetrics() {
+    void shouldRegisterThreadMetricsForValidValues() {
         when(status.get(KEY.THREADS)).thenReturn(7D);
         when(status.get(KEY.VOLUNTARY_CTXT_SWITCHES)).thenReturn(4D);
         when(status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).thenReturn(5D);
@@ -68,22 +67,22 @@ public class ProcessThreadMetricsTest {
 
         uut.bindTo(registry);
 
-        assertEquals(7D, registry.get("process.threads").gauge().value(), 0.0);
+        assertThat(registry.get("process.threads").gauge().value()).isEqualTo(7.0);
 
-        assertEquals(4.0, registry.get("process.threads.context.switches.voluntary")
-                .functionCounter().count(), 0.0);
+        assertThat(registry.get("process.threads.context.switches.voluntary")
+                .functionCounter().count()).isEqualTo(4.0);
 
-        assertEquals(5.0, registry.get("process.threads.context.switches.nonvoluntary")
-                .functionCounter().count(), 0.0);
+        assertThat(registry.get("process.threads.context.switches.nonvoluntary")
+                .functionCounter().count()).isEqualTo(5.0);
 
-        assertEquals(3, registry.getMeters().size());
+        assertThat(registry.getMeters().size()).isEqualTo(3);
 
         verify(status, times(6)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
     }
 
     @Test
-    public void testUnsupported() {
+    void shouldSkipRegistrationForUnsupportedValues() {
         when(status.get(KEY.THREADS)).thenReturn(-1D);
         when(status.get(KEY.VOLUNTARY_CTXT_SWITCHES)).thenReturn(-1D);
         when(status.get(KEY.NONVOLUNTARY_CTXT_SWITCHES)).thenReturn(-1D);
@@ -93,7 +92,7 @@ public class ProcessThreadMetricsTest {
 
         uut.bindTo(registry);
 
-        assertEquals(0, registry.getMeters().size());
+        assertThat(registry.getMeters().size()).isEqualTo(0);
 
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
