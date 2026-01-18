@@ -82,7 +82,7 @@ class ProcessMemoryMetricsTest {
         assertThat(swap.value()).isEqualTo(3.0);
         assertThat(swap.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
-        assertThat(registry.getMeters().size()).isEqualTo(3);
+        assertThat(registry.getMeters()).hasSize(3);
 
         verify(status, times(6)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
@@ -99,7 +99,7 @@ class ProcessMemoryMetricsTest {
 
         uut.bindTo(registry);
 
-        assertThat(registry.getMeters().size()).isEqualTo(0);
+        assertThat(registry.getMeters()).isEmpty();
 
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);

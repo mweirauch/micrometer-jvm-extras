@@ -75,7 +75,7 @@ class ProcessThreadMetricsTest {
         assertThat(registry.get("process.threads.context.switches.nonvoluntary")
                 .functionCounter().count()).isEqualTo(5.0);
 
-        assertThat(registry.getMeters().size()).isEqualTo(3);
+        assertThat(registry.getMeters()).hasSize(3);
 
         verify(status, times(6)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
@@ -92,7 +92,7 @@ class ProcessThreadMetricsTest {
 
         uut.bindTo(registry);
 
-        assertThat(registry.getMeters().size()).isEqualTo(0);
+        assertThat(registry.getMeters()).isEmpty();
 
         verify(status, times(3)).get(any(KEY.class));
         verifyNoMoreInteractions(status);
