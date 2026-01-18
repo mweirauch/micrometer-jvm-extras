@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2019 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,8 +96,8 @@ class ProcfsReader {
 
         try {
             instancesLock.lock();
-            return instances.computeIfAbsent(entry, e -> new ProcfsReader(e));
-        } finally{
+            return instances.computeIfAbsent(entry, ProcfsReader::new);
+        } finally {
             instancesLock.unlock();
         }
     }
