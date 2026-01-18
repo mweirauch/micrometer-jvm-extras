@@ -44,6 +44,7 @@
 
         <slf4j.version>1.7.32</slf4j.version>
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
+        <system-stubs.version>2.1.8</system-stubs.version>
         <jmh.version>1.37</jmh.version>
     </properties>
 
@@ -87,6 +88,18 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava-testlib</artifactId>
             <version>33.5.0-jre</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.webcompere</groupId>
+            <artifactId>system-stubs-jupiter</artifactId>
+            <version>${system-stubs.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.org.webcompere</groupId>
+            <artifactId>system-stubs-core</artifactId>
+            <version>${system-stubs.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -27,13 +27,22 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
+
+@ExtendWith(SystemStubsExtension.class)
 class ProcfsReaderTest {
 
     private static Path basePath;
+
+    @SystemStub
+    private final SystemProperties systemProperties = new SystemProperties();
 
     private final List<String> consumedLines = new ArrayList<>();
 
@@ -65,7 +74,7 @@ class ProcfsReaderTest {
 
     @Test
     void shouldSkipReadingOnUnsupportedOS() throws Exception {
-        System.setProperty("os.name", "SomeOS");
+        systemProperties.set("os.name", "SomeOS");
         final ProcfsReader uut = new ProcfsReader(basePath, "stub", false);
 
         uut.read(consumedLines::add);
