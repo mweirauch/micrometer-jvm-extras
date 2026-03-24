@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.basepom</groupId>
         <artifactId>basepom-oss</artifactId>
-        <version>67</version>
+        <version>68</version>
     </parent>
 
     <groupId>io.github.mweirauch</groupId>
@@ -147,7 +147,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
-                    <printFailingErrors>true</printFailingErrors>
                     <includeTests>true</includeTests>
                     <excludes>**/*_jmh*.java</excludes>
                     <failurePriority>5</failurePriority>

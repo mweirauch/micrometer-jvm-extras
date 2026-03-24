@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  DEFAULT_JAVA: 17
-  SONAR_JAVA: 17
+  DEFAULT_JAVA: 21
+  SONAR_JAVA: 21
   TARGET_JAVA_CLASS_FILE_VERSION: 52 # Java 8
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
     name: Test
     strategy:
       matrix:
-        java: [17, 21, 25]
+        java: [21, 25]
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     env:

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016-2025 Michael Weirauch (michael.weirauch@gmail.com)
+ * Copyright © 2016-2026 Michael Weirauch (michael.weirauch@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class ProcfsEntry {
+public abstract class ProcfsEntry {
 
     private static final Logger log = LoggerFactory.getLogger(ProcfsEntry.class);
 
