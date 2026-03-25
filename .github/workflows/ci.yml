@@ -23,7 +23,7 @@ jobs:
       CENTRAL_SECRETS_PRESENT: ${{ secrets.CENTRAL_USERNAME != '' && secrets.CENTRAL_TOKEN != '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # SonarCloud doesn't like shallow clones
 
