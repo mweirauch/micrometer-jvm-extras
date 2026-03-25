@@ -41,9 +41,14 @@
     <properties>
         <project.build.targetJdk>8</project.build.targetJdk>
         <tagNameFormat>@{project.version}</tagNameFormat>
+        <basepom.test.arguments>
+            -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+            -Xshare:off
+        </basepom.test.arguments>
 
         <slf4j.version>1.7.32</slf4j.version>
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
+        <mockito.version>5.23.0</mockito.version>
         <system-stubs.version>2.1.8</system-stubs.version>
         <jmh.version>1.37</jmh.version>
     </properties>
@@ -81,7 +86,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.21.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
