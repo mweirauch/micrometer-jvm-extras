@@ -18,30 +18,30 @@ A set of additional JVM process metrics for [micrometer.io](https://micrometer.i
 
 ```xml
 <dependency>
-    <groupId>io.github.mweirauch</groupId>
-    <artifactId>micrometer-jvm-extras</artifactId>
-    <version>x.y.z</version>
+  <groupId>io.github.mweirauch</groupId>
+  <artifactId>micrometer-jvm-extras</artifactId>
+  <version>x.y.z</version>
 </dependency>
 ```
 
 ```java
-    /* Plain Java */
-    final MeterRegistry registry = new SimpleMeterRegistry();
-    new ProcessMemoryMetrics().bindTo(registry);
-    new ProcessThreadMetrics().bindTo(registry);
+/* Plain Java */
+final MeterRegistry registry = new SimpleMeterRegistry();
+new ProcessMemoryMetrics().bindTo(registry);
+new ProcessThreadMetrics().bindTo(registry);
 ```
 
 ```java
-    /* With Spring */
-    @Bean
-    public MeterBinder processMemoryMetrics() {
-        return new ProcessMemoryMetrics();
-    }
+/* With Spring */
+@Bean
+public MeterBinder processMemoryMetrics() {
+    return new ProcessMemoryMetrics();
+}
 
-    @Bean
-    public MeterBinder processThreadMetrics() {
-        return new ProcessThreadMetrics();
-    }
+@Bean
+public MeterBinder processThreadMetrics() {
+    return new ProcessThreadMetrics();
+}
 ```
 
 ## Available Metrics
@@ -74,7 +74,10 @@ All `Meter`s are reporting in `bytes`.
 
 ## Notes
 
+* Requires Java 8 or higher
+* This project strives to support a wider range of deployment scenarios. Thus the versions of `micrometer-core` and `slf4j-api` dependencies are chosen in a more defensive manner and don't necessarily reflect their
+latest available versions. Use your build and dependency management tool to manage the versions of these dependencies in your project.
+* Snapshot builds are pushed to [Sonatype Maven Snapshots Repository](https://central.sonatype.com/repository/maven-snapshots/io/github/mweirauch/micrometer-jvm-extras/maven-metadata.xml) on successful `main` builds.
 * `procfs` data is cached for `1000ms` in order to relief the filesystem pressure
   when `Meter`s based on this data are queried by the registry one after
   another on collection run.
-* Snapshot builds are pushed to [Sonatype Nexus Snapshot Repository](https://oss.sonatype.org/content/repositories/snapshots/io/github/mweirauch/micrometer-jvm-extras/) on successful `main` builds.
