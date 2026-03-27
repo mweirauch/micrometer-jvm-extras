@@ -1,0 +1,12 @@
+11:hugetlb:/
+10:cpuset:/
+9:blkio:/
+8:pids:/user.slice/user-1000.slice/user@1000.service
+7:freezer:/
+6:cpu,cpuacct:/
+5:memory:/hard
+4:net_cls,net_prio:/
+3:perf_event:/
+2:devices:/user.slice
+1:name=systemd:/user.slice/user-1000.slice/user@1000.service/gnome-terminal-server.service
+0::/user.slice/user-1000.slice/user@1000.service/gnome-terminal-server.service
