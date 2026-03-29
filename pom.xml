@@ -73,6 +73,12 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit-jupiter.version}</version>
             <scope>test</scope>
@@ -131,6 +137,25 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Help Eclipse processing the JMH benchmarks. -->
+                    <!-- (Otherwise META-INF/BenchmarkList is not generated.) -->
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.openjdk.jmh</groupId>
+                            <artifactId>jmh-generator-annprocess</artifactId>
+                            <version>${jmh.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <!-- disable Java 8 compiler level deprecation warning -->
+                        <arg>-Xlint:-options</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -174,29 +199,10 @@
                             <excludes>
                                 <exclude>pom.xml</exclude>
                                 <exclude>src/build/resources/**/*.*</exclude>
-                                <exclude>src/test/resources/**/*.*</exclude>
+                                <exclude>src/test/resources/**/*</exclude>
                             </excludes>
                         </licenseSet>
                     </licenseSets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- Help Eclipse processing the JMH benchmarks. -->
-                    <!-- (Otherwise META-INF/BenchmarkList is not generated.) -->
-                    <annotationProcessorPaths>
-                        <annotationProcessorPath>
-                            <groupId>org.openjdk.jmh</groupId>
-                            <artifactId>jmh-generator-annprocess</artifactId>
-                            <version>${jmh.version}</version>
-                        </annotationProcessorPath>
-                    </annotationProcessorPaths>
-                    <compilerArgs>
-                        <!-- disable Java 8 compiler level deprecation warning -->
-                        <arg>-Xlint:-options</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>

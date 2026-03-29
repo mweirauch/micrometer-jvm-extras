@@ -29,7 +29,7 @@ import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.NullPointerTester.Visibility;
 
 import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus;
-import io.github.mweirauch.micrometer.jvm.extras.procfs.ProcfsStatus.KEY;
+import io.github.mweirauch.micrometer.jvm.extras.sysfs.CgroupMemory;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
@@ -37,13 +37,18 @@ class ProcessMemoryMetricsTest {
 
     private final ProcfsStatus status = mock(ProcfsStatus.class);
 
+    private final CgroupMemory memory = mock(CgroupMemory.class);
+
     @Test
     void shouldRejectNullParameters() {
-        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status, memory);
 
         assertThat(uut).isNotNull();
 
         final NullPointerTester npt = new NullPointerTester();
+
+        npt.setDefault(ProcfsStatus.class, status);
+        npt.setDefault(CgroupMemory.class, memory);
 
         npt.testConstructors(uut.getClass(), Visibility.PACKAGE);
         npt.testStaticMethods(uut.getClass(), Visibility.PACKAGE);
@@ -59,12 +64,15 @@ class ProcessMemoryMetricsTest {
 
     @Test
     void shouldRegisterMemoryMetricsForValidValues() {
-        when(status.get(KEY.VSS)).thenReturn(1D);
-        when(status.get(KEY.RSS)).thenReturn(2D);
-        when(status.get(KEY.SWAP)).thenReturn(3D);
+        when(status.get(ProcfsStatus.KEY.VSS)).thenReturn(1D);
+        when(status.get(ProcfsStatus.KEY.RSS)).thenReturn(2D);
+        when(status.get(ProcfsStatus.KEY.SWAP)).thenReturn(3D);
+        when(memory.get(CgroupMemory.KEY.LIMIT_SOFT)).thenReturn(CgroupMemory.Value.resolved(4D));
+        when(memory.get(CgroupMemory.KEY.LIMIT_HARD)).thenReturn(CgroupMemory.Value.resolved(5D));
+        when(memory.get(CgroupMemory.KEY.LIMIT_SWAP)).thenReturn(CgroupMemory.Value.resolved(6D));
 
         final SimpleMeterRegistry registry = new SimpleMeterRegistry();
-        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status, memory);
 
         uut.bindTo(registry);
 
@@ -82,26 +90,46 @@ class ProcessMemoryMetricsTest {
         assertThat(swap.value()).isEqualTo(3.0);
         assertThat(swap.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
-        assertThat(registry.getMeters()).hasSize(3);
+        final Gauge limitSoft = registry.get("process.memory.limit.soft").gauge();
+        assertThat(limitSoft.value()).isEqualTo(4.0);
+        assertThat(limitSoft.getId().getBaseUnit()).isEqualTo(expectedUnit);
 
-        verify(status, times(6)).get(any(KEY.class));
+        final Gauge limitHard = registry.get("process.memory.limit.hard").gauge();
+        assertThat(limitHard.value()).isEqualTo(5.0);
+        assertThat(limitHard.getId().getBaseUnit()).isEqualTo(expectedUnit);
+
+        final Gauge limitSwap = registry.get("process.memory.limit.swap").gauge();
+        assertThat(limitSwap.value()).isEqualTo(6.0);
+        assertThat(limitSwap.getId().getBaseUnit()).isEqualTo(expectedUnit);
+
+        assertThat(registry.getMeters()).hasSize(6);
+
+        // 3 on binding, 3 on get
+        verify(status, times(6)).get(any(ProcfsStatus.KEY.class));
         verifyNoMoreInteractions(status);
+
+        // 3 on binding, 3 on get
+        verify(memory, times(6)).get(any(CgroupMemory.KEY.class));
+        verifyNoMoreInteractions(memory);
     }
 
     @Test
     void shouldSkipRegistrationForUnsupportedValues() {
-        when(status.get(KEY.VSS)).thenReturn(-1D);
-        when(status.get(KEY.RSS)).thenReturn(-1D);
-        when(status.get(KEY.SWAP)).thenReturn(-1D);
+        when(status.get(ProcfsStatus.KEY.VSS)).thenReturn(-1D);
+        when(status.get(ProcfsStatus.KEY.RSS)).thenReturn(-1D);
+        when(status.get(ProcfsStatus.KEY.SWAP)).thenReturn(-1D);
+        when(memory.get(CgroupMemory.KEY.LIMIT_SOFT)).thenReturn(CgroupMemory.Value.unsupported());
+        when(memory.get(CgroupMemory.KEY.LIMIT_HARD)).thenReturn(CgroupMemory.Value.unsupported());
+        when(memory.get(CgroupMemory.KEY.LIMIT_SWAP)).thenReturn(CgroupMemory.Value.unsupported());
 
         final SimpleMeterRegistry registry = new SimpleMeterRegistry();
-        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status);
+        final ProcessMemoryMetrics uut = new ProcessMemoryMetrics(status, memory);
 
         uut.bindTo(registry);
 
         assertThat(registry.getMeters()).isEmpty();
 
-        verify(status, times(3)).get(any(KEY.class));
+        verify(status, times(3)).get(any(ProcfsStatus.KEY.class));
         verifyNoMoreInteractions(status);
     }
 

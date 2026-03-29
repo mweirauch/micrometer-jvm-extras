@@ -20,6 +20,8 @@
     </rule>
 
     <rule ref="category/java/codestyle.xml">
+        <exclude name="LocalVariableCouldBeFinal" />
+        <exclude name="CommentDefaultAccessModifier" />
         <exclude name="MethodArgumentCouldBeFinal" />
         <exclude name="UseUnderscoresInNumericLiterals" />
         <exclude name="TooManyStaticImports" />
@@ -30,7 +32,17 @@
     </rule>
     <rule ref="category/java/codestyle.xml/LongVariable">
         <properties>
-            <property name="minimum" value="30" />
+            <property name="minimum" value="35" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" value="2" />
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="2" />
         </properties>
     </rule>
 
@@ -41,7 +53,9 @@
 
     <!-- <rule ref="category/java/documentation.xml" /> -->
 
-    <rule ref="category/java/errorprone.xml" />
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AvoidFieldNameMatchingMethodName" />
+    </rule>
     <rule ref="category/java/errorprone.xml/AssignmentInOperand">
         <properties>
             <property name="allowIncrementDecrement" value="true" />
@@ -52,7 +66,9 @@
         <exclude name="UseConcurrentHashMap" />
     </rule>
 
-    <rule ref="category/java/performance.xml" />
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops" />
+    </rule>
 
     <rule ref="category/java/security.xml" />
 

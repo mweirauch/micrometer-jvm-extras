@@ -48,15 +48,24 @@ public MeterBinder processThreadMetrics() {
 
 ### ProcessMemoryMetrics
 
-`ProcessMemoryMetrics` reads process-level memory information from `/proc/self/status`.
+`ProcessMemoryMetrics` reads process-level memory information from `/proc/self/status` and cgroup control files.
 All `Meter`s are reporting in `bytes`.
 
-> Please note that `procfs` is only available on Linux-based systems.
+> Please note that `procfs` and the cgroup subsystem are only available on Linux-based systems.
+
+#### Memory Usage
 
 * `process.memory.vss`: Virtual set size. The amount of virtual memory the process can access.
   Mostly irrelevant, but included for completeness sake.
 * `process.memory.rss`: Resident set size. The amount of process memory currently in RAM.
 * `process.memory.swap`: The amount of process memory paged out to swap.
+
+#### Memory Limits
+
+* `process.memory.limit.soft`: Soft memory limit imposed by the cgroup.
+* `process.memory.limit.hard`: Hard memory limit imposed by the cgroup.
+* `process.memory.limit.swap`: Swap memory limit imposed by the cgroup.
+  For cgroup v1 systems this value represents the total memory+swap limit, while for cgroup v2 systems it represents the swap limit only.
 
 ### ProcessThreadMetrics
 
