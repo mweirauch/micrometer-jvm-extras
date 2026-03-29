@@ -1,17 +1,46 @@
 # Changelog
 
-## [Unreleased](https://github.com/mweirauch/micrometer-jvm-extras/tree/HEAD)
+## [0.3.0](https://github.com/mweirauch/micrometer-jvm-extras/tree/0.3.0) (2026-03-29)
 
-[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.2...HEAD)
+[Full Changelog](https://github.com/mweirauch/micrometer-jvm-extras/compare/0.2.2...0.3.0)
+
+This (long overdue) release adds support for cgroup memory limit metrics to provide better visibility into container memory usage. Additionally a new set of context switching metrics has been added by @wyhasany as well as performance optimizations by @wyhasany and @ofaizulin  to reduce lock contention during metric collection.
+
+On the compatibility front, unsupported metrics are not registered anymore, and the library now includes an Automatic-Module-Name for better integration with the Java module system.
+
 
 **Enhancements:**
 
+- Add cgroup memory metrics \(soft, hard and swap limits\) [\#237](https://github.com/mweirauch/micrometer-jvm-extras/pull/237) ([mweirauch](https://github.com/mweirauch))
+- Replace synchronized block with ReentrantLock to avoid possible thread pinning with virtual threads \(Java 21\) [\#208](https://github.com/mweirauch/micrometer-jvm-extras/pull/208) ([ofaizulin](https://github.com/ofaizulin))
+- Don't register unsupported metrics [\#202](https://github.com/mweirauch/micrometer-jvm-extras/pull/202) ([mweirauch](https://github.com/mweirauch))
 - Context switching metrics [\#175](https://github.com/mweirauch/micrometer-jvm-extras/pull/175) ([wyhasany](https://github.com/wyhasany))
 - Minimize lock contention on collecting metrics [\#174](https://github.com/mweirauch/micrometer-jvm-extras/pull/174) ([wyhasany](https://github.com/wyhasany))
 - Add JPMS Automatic-Module-Name [\#158](https://github.com/mweirauch/micrometer-jvm-extras/pull/158) ([mweirauch](https://github.com/mweirauch))
 
 **Maintenance:**
 
+- Bump com.google.guava:guava-testlib from 31.0.1-jre to 33.3.0-jre [\#209](https://github.com/mweirauch/micrometer-jvm-extras/pull/209) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Prevent CI double execution [\#238](https://github.com/mweirauch/micrometer-jvm-extras/pull/238) ([mweirauch](https://github.com/mweirauch))
+- Bump org.mockito:mockito-core from 5.21.0 to 5.23.0 [\#236](https://github.com/mweirauch/micrometer-jvm-extras/pull/236) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.basepom:basepom-oss from 67 to 68 [\#234](https://github.com/mweirauch/micrometer-jvm-extras/pull/234) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump junit-jupiter.version from 6.0.2 to 6.0.3 [\#233](https://github.com/mweirauch/micrometer-jvm-extras/pull/233) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.assertj:assertj-core from 3.27.6 to 3.27.7 [\#232](https://github.com/mweirauch/micrometer-jvm-extras/pull/232) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/checkout from 5 to 6 [\#231](https://github.com/mweirauch/micrometer-jvm-extras/pull/231) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/cache from 4 to 5 [\#230](https://github.com/mweirauch/micrometer-jvm-extras/pull/230) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump slf4j.version from 1.7.32 to 1.7.36 [\#229](https://github.com/mweirauch/micrometer-jvm-extras/pull/229) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Fix test execution after Mockito update [\#228](https://github.com/mweirauch/micrometer-jvm-extras/pull/228) ([mweirauch](https://github.com/mweirauch))
+- Address SonarCloud issues [\#227](https://github.com/mweirauch/micrometer-jvm-extras/pull/227) ([mweirauch](https://github.com/mweirauch))
+- Migrate to JUnit Jupiter [\#226](https://github.com/mweirauch/micrometer-jvm-extras/pull/226) ([mweirauch](https://github.com/mweirauch))
+- Update to basepom-oss 67 [\#225](https://github.com/mweirauch/micrometer-jvm-extras/pull/225) ([mweirauch](https://github.com/mweirauch))
+- Update to basepom-oss 66 [\#224](https://github.com/mweirauch/micrometer-jvm-extras/pull/224) ([mweirauch](https://github.com/mweirauch))
+- Bump org.mockito:mockito-core from 3.6.28 to 5.21.0 [\#222](https://github.com/mweirauch/micrometer-jvm-extras/pull/222) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump com.google.guava:guava-testlib from 33.3.0-jre to 33.5.0-jre [\#221](https://github.com/mweirauch/micrometer-jvm-extras/pull/221) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump io.micrometer:micrometer-core from 1.7.6 to 1.9.17 [\#218](https://github.com/mweirauch/micrometer-jvm-extras/pull/218) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update Dependabot configuration [\#217](https://github.com/mweirauch/micrometer-jvm-extras/pull/217) ([mweirauch](https://github.com/mweirauch))
+- Update GitHub Actions [\#215](https://github.com/mweirauch/micrometer-jvm-extras/pull/215) ([mweirauch](https://github.com/mweirauch))
+- Bump jmh.version from 1.33 to 1.37 [\#213](https://github.com/mweirauch/micrometer-jvm-extras/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump org.basepom:basepom-oss from 42 to 59 [\#212](https://github.com/mweirauch/micrometer-jvm-extras/pull/212) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Fix shields.io GitHub Actions badge [\#201](https://github.com/mweirauch/micrometer-jvm-extras/pull/201) ([mweirauch](https://github.com/mweirauch))
 - Drop smaps code [\#157](https://github.com/mweirauch/micrometer-jvm-extras/pull/157) ([mweirauch](https://github.com/mweirauch))
 - Bump micrometer-core to 1.7.6 [\#149](https://github.com/mweirauch/micrometer-jvm-extras/pull/149) ([mweirauch](https://github.com/mweirauch))
