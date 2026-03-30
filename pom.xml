@@ -45,7 +45,7 @@
             -Xshare:off
         </basepom.test.arguments>
 
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <mockito.version>5.23.0</mockito.version>
         <system-stubs.version>2.1.8</system-stubs.version>
