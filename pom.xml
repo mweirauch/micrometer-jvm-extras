@@ -46,7 +46,7 @@
         </basepom.test.arguments>
 
         <slf4j.version>1.7.36</slf4j.version>
-        <junit-jupiter.version>6.0.3</junit-jupiter.version>
+        <junit-jupiter.version>6.1.1</junit-jupiter.version>
         <mockito.version>5.23.0</mockito.version>
         <system-stubs.version>2.1.8</system-stubs.version>
         <jmh.version>1.37</jmh.version>
